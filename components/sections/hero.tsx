@@ -5,7 +5,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import Badge from "@/components/common/badge";
 import PhoneMockup from "@/components/animations/phone-mockup";
-import NfcRipple from "@/components/animations/nfc-ripple";
 import { stagger, fadeUp } from "@/lib/motion";
 
 const stats = [
@@ -18,11 +17,11 @@ export default function Hero() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="relative min-h-screen flex flex-col bg-[#09090B]">
-      {/* Aurora background */}
+    <section className="relative min-h-[820px] flex flex-col bg-[#09090B]">
+      {/* Aurora background — contained in its own overflow:hidden wrapper */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         <div
-          className="aurora-1 absolute rounded-full"
+          className="absolute rounded-full"
           style={{
             width: 700,
             height: 700,
@@ -32,7 +31,7 @@ export default function Hero() {
           }}
         />
         <div
-          className="aurora-2 absolute rounded-full"
+          className="absolute rounded-full"
           style={{
             width: 600,
             height: 600,
@@ -44,9 +43,10 @@ export default function Hero() {
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 flex-1 flex items-center pt-24 pb-10">
+      <div className="relative z-10 flex-1 flex items-center pt-28 pb-16">
         <div className="max-w-6xl mx-auto px-6 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
             {/* Left: content */}
             <motion.div
               variants={shouldReduceMotion ? {} : stagger}
@@ -54,18 +54,17 @@ export default function Hero() {
               animate="visible"
               className="flex flex-col gap-6"
             >
-              {/* Badge */}
               <motion.div variants={shouldReduceMotion ? {} : fadeUp}>
                 <Badge variant="indigo">NFC-Powered Loyalty</Badge>
               </motion.div>
 
-              {/* H1 */}
               <motion.h1
                 variants={shouldReduceMotion ? {} : fadeUp}
                 className="font-[family-name:var(--font-dm-sans)] text-5xl sm:text-6xl lg:text-7xl font-bold text-[#F4F4F5] leading-[1.05] tracking-tight"
               >
                 Turn Every Visit{" "}
-                <span className="text-transparent bg-clip-text"
+                <span
+                  className="text-transparent bg-clip-text"
                   style={{
                     backgroundImage: "linear-gradient(135deg, #6366F1 0%, #4F46E5 50%, #F59E0B 100%)",
                   }}
@@ -74,7 +73,6 @@ export default function Hero() {
                 </span>
               </motion.h1>
 
-              {/* Subheadline */}
               <motion.p
                 variants={shouldReduceMotion ? {} : fadeUp}
                 className="text-lg text-[#71717A] leading-relaxed max-w-lg"
@@ -82,7 +80,6 @@ export default function Hero() {
                 Replace paper stamp cards with beautiful NFC-powered digital rewards. Zero friction for customers. Full insight for you.
               </motion.p>
 
-              {/* CTA buttons */}
               <motion.div
                 variants={shouldReduceMotion ? {} : fadeUp}
                 className="flex flex-col sm:flex-row gap-3 mt-2"
@@ -101,16 +98,13 @@ export default function Hero() {
                 </Link>
               </motion.div>
 
-              {/* Stats row */}
               <motion.div
                 variants={shouldReduceMotion ? {} : fadeUp}
                 className="flex items-center gap-8 pt-2"
               >
                 {stats.map((stat, i) => (
                   <div key={stat.label}>
-                    {i > 0 && (
-                      <span className="sr-only">/</span>
-                    )}
+                    {i > 0 && <span className="sr-only">/</span>}
                     <div className="flex flex-col">
                       <span className="font-[family-name:var(--font-dm-sans)] font-bold text-xl text-[#F4F4F5]">
                         {stat.value}
@@ -122,21 +116,17 @@ export default function Hero() {
               </motion.div>
             </motion.div>
 
-            {/* Right: phone animation */}
-            <div className="flex flex-col items-center justify-end relative pb-16 overflow-visible">
+            {/* Right: phone — centered, no overflow tricks needed */}
+            <div className="flex items-center justify-center">
               <motion.div
                 initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="relative overflow-visible"
               >
                 <PhoneMockup />
-                {/* NFC ripple sits at phone bottom — needs overflow-visible on all ancestors */}
-                <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 pointer-events-none">
-                  <NfcRipple />
-                </div>
               </motion.div>
             </div>
+
           </div>
         </div>
       </div>
@@ -145,7 +135,7 @@ export default function Hero() {
       <div className="relative z-10 flex justify-center pb-8">
         <motion.div
           animate={shouldReduceMotion ? {} : { y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" as const }}
           className="text-[#3F3F46]"
           aria-hidden="true"
         >
