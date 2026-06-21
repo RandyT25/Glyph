@@ -15,7 +15,7 @@ export default function PhoneMockup({ className }: PhoneMockupProps) {
     <motion.div
       className={className}
       animate={shouldReduceMotion ? undefined : floatY.animate}
-      style={{ width: 260 }}
+      style={{ width: 240 }}
     >
       {/* Phone frame */}
       <div
@@ -24,9 +24,9 @@ export default function PhoneMockup({ className }: PhoneMockupProps) {
           background: "#111113",
           border: "2px solid #27272A",
           boxShadow:
-            "0 0 0 1px rgba(255,255,255,0.04), 0 32px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.06)",
-          width: 260,
-          height: 520,
+            "0 0 0 1px rgba(255,255,255,0.04), 0 24px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.06)",
+          width: 240,
+          height: 460,
         }}
       >
         {/* Notch */}

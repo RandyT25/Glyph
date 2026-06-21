@@ -44,7 +44,7 @@ export default function Hero() {
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 flex-1 flex items-center pt-28 pb-16">
+      <div className="relative z-10 flex-1 flex items-center pt-24 pb-10">
         <div className="max-w-6xl mx-auto px-6 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left: content */}
@@ -123,7 +123,7 @@ export default function Hero() {
             </motion.div>
 
             {/* Right: phone animation */}
-            <div className="flex flex-col items-center justify-center relative pb-20 overflow-visible">
+            <div className="flex flex-col items-center justify-end relative pb-16 overflow-visible">
               <motion.div
                 initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -131,8 +131,8 @@ export default function Hero() {
                 className="relative overflow-visible"
               >
                 <PhoneMockup />
-                {/* NFC ripple at phone bottom */}
-                <div className="absolute -bottom-12 left-1/2 -translate-x-1/2">
+                {/* NFC ripple sits at phone bottom — needs overflow-visible on all ancestors */}
+                <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 pointer-events-none">
                   <NfcRipple />
                 </div>
               </motion.div>
