@@ -18,7 +18,7 @@ export default function Hero() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="relative min-h-screen flex flex-col overflow-hidden bg-[#09090B]">
+    <section className="relative min-h-screen flex flex-col overflow-x-hidden bg-[#09090B]">
       {/* Aurora background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         <div
@@ -123,16 +123,16 @@ export default function Hero() {
             </motion.div>
 
             {/* Right: phone animation */}
-            <div className="flex flex-col items-center justify-center relative">
+            <div className="flex flex-col items-center justify-center relative pb-20 overflow-visible">
               <motion.div
                 initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="relative"
+                className="relative overflow-visible"
               >
                 <PhoneMockup />
                 {/* NFC ripple at phone bottom */}
-                <div className="absolute -bottom-10 left-1/2 -translate-x-1/2">
+                <div className="absolute -bottom-12 left-1/2 -translate-x-1/2">
                   <NfcRipple />
                 </div>
               </motion.div>

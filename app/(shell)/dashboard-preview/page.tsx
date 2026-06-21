@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import GlyphMark from "@/components/common/glyph-mark";
 
-type Tab = "overview" | "campaigns" | "customers" | "analytics";
+type Tab = "overview" | "campaigns" | "customers" | "analytics" | "settings";
 
 const tabs: { id: Tab; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
@@ -137,11 +137,11 @@ export default function DashboardPreviewPage() {
             { label: "Campaigns", icon: Megaphone, tab: "campaigns" },
             { label: "Customers", icon: Users, tab: "customers" },
             { label: "Analytics", icon: BarChart3, tab: "analytics" },
-            { label: "Settings", icon: Settings, tab: null },
+            { label: "Settings", icon: Settings, tab: "settings" },
           ].map((item) => (
             <button
               key={item.label}
-              onClick={() => item.tab && setActiveTab(item.tab as Tab)}
+              onClick={() => setActiveTab(item.tab as Tab)}
               className={[
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer w-full text-left",
                 item.tab === activeTab
@@ -509,6 +509,108 @@ export default function DashboardPreviewPage() {
                       <div key={c} className="w-3 h-3 rounded-sm" style={{ background: c }} />
                     ))}
                     <span className="text-[9px] text-[#52525B]">More</span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+            {activeTab === "settings" && (
+              <motion.div
+                key="settings"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.22 }}
+                className="max-w-2xl"
+              >
+                <h1 className="font-[family-name:var(--font-dm-sans)] text-2xl font-bold text-[#F4F4F5] mb-2">
+                  Settings
+                </h1>
+                <p className="text-sm text-[#52525B] mb-8">Manage your business profile and preferences.</p>
+
+                {/* Business Profile */}
+                <div className="rounded-xl bg-[#111113] border border-[#27272A] p-6 mb-4">
+                  <h2 className="font-[family-name:var(--font-dm-sans)] font-semibold text-[#F4F4F5] text-sm mb-4">Business Profile</h2>
+                  <div className="flex flex-col gap-4">
+                    <div>
+                      <label className="block text-xs text-[#71717A] mb-1.5">Business Name</label>
+                      <div className="w-full px-3 py-2.5 rounded-lg bg-[#18181B] border border-[#27272A] text-sm text-[#F4F4F5]">Maison Café</div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs text-[#71717A] mb-1.5">Business Type</label>
+                        <div className="w-full px-3 py-2.5 rounded-lg bg-[#18181B] border border-[#27272A] text-sm text-[#F4F4F5]">Café / Coffee Shop</div>
+                      </div>
+                      <div>
+                        <label className="block text-xs text-[#71717A] mb-1.5">Location</label>
+                        <div className="w-full px-3 py-2.5 rounded-lg bg-[#18181B] border border-[#27272A] text-sm text-[#F4F4F5]">Paris, France</div>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs text-[#71717A] mb-1.5">Contact Email</label>
+                      <div className="w-full px-3 py-2.5 rounded-lg bg-[#18181B] border border-[#27272A] text-sm text-[#F4F4F5]">hello@maisoncafe.fr</div>
+                    </div>
+                    <button className="self-start px-4 py-2 rounded-lg bg-[#4F46E5] hover:bg-[#6366F1] text-white text-xs font-semibold transition-colors duration-200 cursor-pointer">
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+
+                {/* NFC Stamper */}
+                <div className="rounded-xl bg-[#111113] border border-[#27272A] p-6 mb-4">
+                  <h2 className="font-[family-name:var(--font-dm-sans)] font-semibold text-[#F4F4F5] text-sm mb-4">NFC Stamper</h2>
+                  <div className="flex items-center justify-between py-2">
+                    <div>
+                      <p className="text-sm text-[#F4F4F5]">Stamper Name</p>
+                      <p className="text-xs text-[#52525B] mt-0.5">Displayed on the customer&apos;s loyalty card</p>
+                    </div>
+                    <div className="px-3 py-2 rounded-lg bg-[#18181B] border border-[#27272A] text-sm text-[#F4F4F5] w-40 text-right">
+                      Counter #1
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-t border-[#27272A]">
+                    <div>
+                      <p className="text-sm text-[#F4F4F5]">Device Status</p>
+                      <p className="text-xs text-[#52525B] mt-0.5">Last seen 2 minutes ago</p>
+                    </div>
+                    <span className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+                      Online
+                    </span>
+                  </div>
+                </div>
+
+                {/* Notifications */}
+                <div className="rounded-xl bg-[#111113] border border-[#27272A] p-6 mb-4">
+                  <h2 className="font-[family-name:var(--font-dm-sans)] font-semibold text-[#F4F4F5] text-sm mb-4">Notifications</h2>
+                  {[
+                    { label: "New customer joined", desc: "When someone taps for the first time", on: true },
+                    { label: "Reward unlocked", desc: "When a customer completes their stamp card", on: true },
+                    { label: "Weekly digest", desc: "Summary of stamps and retention every Monday", on: false },
+                    { label: "Inactive customer alert", desc: "When a regular hasn't visited in 30 days", on: false },
+                  ].map((item) => (
+                    <div key={item.label} className="flex items-center justify-between py-3 border-t border-[#27272A] first:border-0">
+                      <div>
+                        <p className="text-sm text-[#F4F4F5]">{item.label}</p>
+                        <p className="text-xs text-[#52525B] mt-0.5">{item.desc}</p>
+                      </div>
+                      <div className={["w-10 h-5 rounded-full relative transition-colors duration-200 cursor-pointer", item.on ? "bg-[#4F46E5]" : "bg-[#27272A]"].join(" ")}>
+                        <div className={["absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all duration-200", item.on ? "right-0.5" : "left-0.5"].join(" ")} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Danger zone */}
+                <div className="rounded-xl border border-red-500/20 bg-red-500/[0.03] p-6">
+                  <h2 className="font-[family-name:var(--font-dm-sans)] font-semibold text-red-400 text-sm mb-3">Danger Zone</h2>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-[#F4F4F5]">Archive this business</p>
+                      <p className="text-xs text-[#52525B] mt-0.5">All data is retained. You can reactivate anytime.</p>
+                    </div>
+                    <button className="px-4 py-2 rounded-lg border border-red-500/30 text-red-400 text-xs font-semibold hover:bg-red-500/10 transition-colors duration-200 cursor-pointer">
+                      Archive
+                    </button>
                   </div>
                 </div>
               </motion.div>

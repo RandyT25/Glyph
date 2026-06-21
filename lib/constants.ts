@@ -1,4 +1,5 @@
 export const NAV_LINKS = [
+  { label: "Home", href: "/" },
   { label: "Features", href: "/features" },
   { label: "Pricing", href: "/pricing" },
   { label: "Dashboard", href: "/dashboard-preview" },
@@ -134,9 +135,10 @@ export const PRICING_TIERS = [
     description: "For single-location businesses just getting started.",
     features: [
       "1 location",
-      "1 NFC stamper",
+      "QR code stamps (no hardware needed)",
       "Up to 200 active customers",
       "Basic analytics",
+      "NFC stamper available as add-on",
       "Email support",
     ],
     cta: "Start Free",
