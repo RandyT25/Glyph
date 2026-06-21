@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, ChevronDown } from "lucide-react";
@@ -175,7 +176,7 @@ export default function PricingPage() {
                   ))}
                 </ul>
 
-                <a
+                <Link
                   href={tier.price.monthly === null ? "/contact" : "/contact"}
                   className={[
                     "cursor-pointer inline-flex items-center justify-center w-full py-3.5 rounded-xl text-sm font-semibold transition-all duration-200",
@@ -185,7 +186,7 @@ export default function PricingPage() {
                   ].join(" ")}
                 >
                   {tier.cta}
-                </a>
+                </Link>
               </div>
             </ScrollReveal>
           ))}
@@ -281,12 +282,12 @@ export default function PricingPage() {
           <p className="text-[#71717A] mb-8">
             Book a 15-minute call and we&apos;ll answer everything — no sales pressure, no pitch deck.
           </p>
-          <a
+          <Link
             href="/contact"
             className="cursor-pointer inline-flex items-center gap-2 bg-[#4F46E5] hover:bg-[#6366F1] text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/25"
           >
             Talk to a Human
-          </a>
+          </Link>
         </div>
       </section>
     </main>

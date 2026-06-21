@@ -68,13 +68,13 @@ export default function PhoneMockup({ className }: PhoneMockupProps) {
 
             {/* Stamp progress */}
             <div className="bg-[#111113] rounded-2xl p-4 border border-[#27272A] mb-4">
-              <StampProgress filledCount={7} animated={false} />
+              <StampProgress filledCount={7} animated={false} rewardLabel="Free Coffee" />
             </div>
 
             {/* Progress label */}
             <div className="bg-[#4F46E5]/10 border border-[#4F46E5]/20 rounded-xl px-4 py-3 mb-4">
               <p className="text-[#6366F1] text-xs font-semibold text-center">
-                7 / 8 stamps — 1 more for your free coffee!
+                7 / 9 stamps — 2 more for your free coffee!
               </p>
             </div>
 

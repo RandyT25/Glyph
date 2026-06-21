@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Nfc,
@@ -327,12 +328,12 @@ export default function FeaturesPage() {
           <p className="text-[#71717A] mb-8">
             Book a 15-minute demo and we&apos;ll walk you through every feature for your type of business.
           </p>
-          <a
+          <Link
             href="/contact"
             className="cursor-pointer inline-flex items-center gap-2 bg-[#4F46E5] hover:bg-[#6366F1] text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/25"
           >
             Book a Demo
-          </a>
+          </Link>
         </div>
       </section>
     </main>

@@ -54,11 +54,10 @@ export default function FeaturesBento() {
           />
         </ScrollReveal>
 
-        {/* Bento grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Features grid — 4 per row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {FEATURES.map((feature, i) => {
             const Icon = iconMap[feature.icon] ?? Nfc;
-            const isLarge = feature.size === "large";
             const isHovered = hoveredId === feature.id;
 
             return (
@@ -66,7 +65,7 @@ export default function FeaturesBento() {
                 key={feature.id}
                 variants={scaleIn}
                 delay={i * 0.05}
-                className={isLarge ? "lg:col-span-2" : "col-span-1"}
+                className="col-span-1"
               >
                 <div
                   onMouseEnter={() => setHoveredId(feature.id)}

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import ScrollReveal from "@/components/animations/scroll-reveal";
 import GlyphMark from "@/components/common/glyph-mark";
 
@@ -44,18 +45,18 @@ export default function FinalCTA() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
+            <Link
               href="/contact"
               className="cursor-pointer inline-flex items-center justify-center gap-2 bg-white hover:bg-indigo-50 text-[#312E81] font-semibold text-base px-8 py-4 rounded-xl transition-all duration-200 shadow-xl shadow-black/20 min-w-[160px]"
             >
               Book a Demo
-            </a>
-            <a
+            </Link>
+            <Link
               href="/pricing"
               className="cursor-pointer inline-flex items-center justify-center gap-2 bg-transparent border border-white/30 hover:border-white/60 hover:bg-white/10 text-white font-semibold text-base px-8 py-4 rounded-xl transition-all duration-200 min-w-[160px]"
             >
               Start Free
-            </a>
+            </Link>
           </div>
         </ScrollReveal>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import Badge from "@/components/common/badge";
@@ -86,18 +87,18 @@ export default function Hero() {
                 variants={shouldReduceMotion ? {} : fadeUp}
                 className="flex flex-col sm:flex-row gap-3 mt-2"
               >
-                <a
+                <Link
                   href="/contact"
                   className="cursor-pointer inline-flex items-center justify-center gap-2 bg-[#4F46E5] hover:bg-[#6366F1] text-white font-semibold text-sm px-6 py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40"
                 >
                   Book Demo
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/pricing"
                   className="cursor-pointer inline-flex items-center justify-center gap-2 bg-transparent border border-[#27272A] hover:border-[#4F46E5] text-[#F4F4F5] hover:text-white font-semibold text-sm px-6 py-3.5 rounded-xl transition-all duration-200"
                 >
                   Start Free
-                </a>
+                </Link>
               </motion.div>
 
               {/* Stats row */}

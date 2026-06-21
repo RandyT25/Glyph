@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import GlyphMark from "@/components/common/glyph-mark";
 import ScrollReveal from "@/components/animations/scroll-reveal";
@@ -207,12 +208,12 @@ export default function AboutPage() {
             <p className="text-[#71717A] mb-8">
               Join 500+ businesses building loyalty that lasts.
             </p>
-            <a
+            <Link
               href="/contact"
               className="cursor-pointer inline-flex items-center gap-2 bg-[#4F46E5] hover:bg-[#6366F1] text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/25"
             >
               Get Started
-            </a>
+            </Link>
           </ScrollReveal>
         </div>
       </section>

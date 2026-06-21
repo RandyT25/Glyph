@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Check } from "lucide-react";
 import ScrollReveal from "@/components/animations/scroll-reveal";
 import SectionHeader from "@/components/common/section-header";
@@ -82,7 +83,7 @@ export default function PricingTeaser() {
                 </ul>
 
                 {/* CTA */}
-                <a
+                <Link
                   href={tier.price.monthly === null ? "/contact" : "/pricing"}
                   className={[
                     "cursor-pointer inline-flex items-center justify-center w-full py-3 rounded-xl text-sm font-semibold transition-all duration-200",
@@ -92,7 +93,7 @@ export default function PricingTeaser() {
                   ].join(" ")}
                 >
                   {tier.cta}
-                </a>
+                </Link>
               </div>
             </ScrollReveal>
           ))}
@@ -100,12 +101,12 @@ export default function PricingTeaser() {
 
         {/* Link to full pricing */}
         <div className="text-center">
-          <a
+          <Link
             href="/pricing"
             className="text-sm text-[#52525B] hover:text-[#4F46E5] transition-colors duration-200 inline-flex items-center gap-1"
           >
             Full pricing details &rarr;
-          </a>
+          </Link>
         </div>
       </div>
     </section>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import GlyphMark from "@/components/common/glyph-mark";
 import { NAV_LINKS } from "@/lib/constants";
 
@@ -8,7 +9,7 @@ export default function Footer() {
         {/* Row 1 */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
           {/* Logo left */}
-          <a
+          <Link
             href="/"
             className="flex items-center gap-2.5 cursor-pointer select-none"
             aria-label="Glyph home"
@@ -17,28 +18,28 @@ export default function Footer() {
             <span className="font-[family-name:var(--font-dm-sans)] font-bold text-[#F4F4F5] text-base tracking-tight">
               Glyph
             </span>
-          </a>
+          </Link>
 
           {/* Nav links center */}
           <nav>
             <ul className="flex flex-wrap items-center justify-center gap-6">
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
-                  <a
+                  <Link
                     href={link.href}
                     className="text-sm text-[#71717A] hover:text-[#F4F4F5] transition-colors duration-200"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
               <li>
-                <a
+                <Link
                   href="/contact"
                   className="text-sm text-[#71717A] hover:text-[#F4F4F5] transition-colors duration-200"
                 >
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>

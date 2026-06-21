@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
 import GlyphMark from "@/components/common/glyph-mark";
 import { NAV_LINKS } from "@/lib/constants";
 
@@ -39,7 +40,7 @@ export default function Nav() {
           ].join(" ")}
         >
           {/* Logo */}
-          <a
+          <Link
             href="/"
             className="flex items-center gap-2.5 cursor-pointer select-none"
             aria-label="Glyph home"
@@ -48,36 +49,36 @@ export default function Nav() {
             <span className="font-[family-name:var(--font-dm-sans)] font-bold text-[#F4F4F5] text-lg tracking-tight">
               Glyph
             </span>
-          </a>
+          </Link>
 
           {/* Desktop nav links */}
           <ul className="hidden md:flex items-center gap-7">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
-                <a
+                <Link
                   href={link.href}
                   className="text-sm text-[#71717A] hover:text-[#F4F4F5] transition-colors duration-200 font-medium"
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
 
           {/* Desktop right */}
           <div className="hidden md:flex items-center gap-3">
-            <a
+            <Link
               href="/contact"
               className="text-sm text-[#71717A] hover:text-[#F4F4F5] transition-colors duration-200 font-medium"
             >
               Contact
-            </a>
-            <a
+            </Link>
+            <Link
               href="/contact"
               className="cursor-pointer inline-flex items-center gap-2 bg-[#4F46E5] hover:bg-[#6366F1] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all duration-200"
             >
               Book Demo
-            </a>
+            </Link>
           </div>
 
           {/* Mobile hamburger */}
@@ -103,39 +104,48 @@ export default function Nav() {
           >
             <nav className="flex flex-col gap-1 flex-1">
               {NAV_LINKS.map((link, i) => (
-                <motion.a
+                <motion.div
                   key={link.href}
-                  href={link.href}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.06, duration: 0.3 }}
-                  onClick={() => setMobileOpen(false)}
-                  className="text-2xl font-[family-name:var(--font-dm-sans)] font-semibold text-[#A1A1AA] hover:text-white py-3 border-b border-white/[0.06] transition-colors duration-200 cursor-pointer"
                 >
-                  {link.label}
-                </motion.a>
+                  <Link
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="block text-2xl font-[family-name:var(--font-dm-sans)] font-semibold text-[#A1A1AA] hover:text-white py-3 border-b border-white/[0.06] transition-colors duration-200 cursor-pointer"
+                  >
+                    {link.label}
+                  </Link>
+                </motion.div>
               ))}
-              <motion.a
-                href="/contact"
+              <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: NAV_LINKS.length * 0.06, duration: 0.3 }}
-                onClick={() => setMobileOpen(false)}
-                className="text-2xl font-[family-name:var(--font-dm-sans)] font-semibold text-[#A1A1AA] hover:text-white py-3 border-b border-white/[0.06] transition-colors duration-200 cursor-pointer"
               >
-                Contact
-              </motion.a>
+                <Link
+                  href="/contact"
+                  onClick={() => setMobileOpen(false)}
+                  className="block text-2xl font-[family-name:var(--font-dm-sans)] font-semibold text-[#A1A1AA] hover:text-white py-3 border-b border-white/[0.06] transition-colors duration-200 cursor-pointer"
+                >
+                  Contact
+                </Link>
+              </motion.div>
             </nav>
-            <motion.a
-              href="/contact"
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              onClick={() => setMobileOpen(false)}
-              className="mt-6 w-full inline-flex items-center justify-center bg-[#4F46E5] hover:bg-[#6366F1] text-white text-base font-semibold px-6 py-4 rounded-xl transition-all duration-200 cursor-pointer"
             >
-              Book Demo
-            </motion.a>
+              <Link
+                href="/contact"
+                onClick={() => setMobileOpen(false)}
+                className="mt-6 w-full inline-flex items-center justify-center bg-[#4F46E5] hover:bg-[#6366F1] text-white text-base font-semibold px-6 py-4 rounded-xl transition-all duration-200 cursor-pointer"
+              >
+                Book Demo
+              </Link>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
