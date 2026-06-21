@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { floatY } from "@/lib/motion";
 import StampProgress from "./stamp-progress";
-import NfcRipple from "./nfc-ripple";
+
 
 interface PhoneMockupProps {
   className?: string;
@@ -109,12 +109,6 @@ export default function PhoneMockup({ className }: PhoneMockupProps) {
           </div>
         </div>
 
-        {/* NFC ripple — inside the phone frame so overflow:hidden clips it naturally */}
-        {!shouldReduceMotion && (
-          <div className="absolute bottom-14 left-1/2 -translate-x-1/2 pointer-events-none z-20 opacity-60">
-            <NfcRipple />
-          </div>
-        )}
       </div>
     </motion.div>
   );
