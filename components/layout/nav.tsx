@@ -74,6 +74,12 @@ export default function Nav() {
               Contact
             </Link>
             <Link
+              href="/demo"
+              className="cursor-pointer inline-flex items-center gap-2 border border-[#4F46E5] hover:border-[#6366F1] text-[#6366F1] hover:text-white hover:bg-[#4F46E5] text-sm font-semibold px-4 py-2 rounded-lg transition-all duration-200"
+            >
+              See Demo
+            </Link>
+            <Link
               href="/contact"
               className="cursor-pointer inline-flex items-center gap-2 bg-[#4F46E5] hover:bg-[#6366F1] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all duration-200"
             >

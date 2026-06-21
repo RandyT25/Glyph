@@ -91,6 +91,12 @@ export default function Hero() {
                   Book Demo
                 </Link>
                 <Link
+                  href="/demo"
+                  className="cursor-pointer inline-flex items-center justify-center gap-2 bg-transparent border border-[#4F46E5]/50 hover:border-[#4F46E5] text-[#6366F1] hover:text-white hover:bg-[#4F46E5]/10 font-semibold text-sm px-6 py-3.5 rounded-xl transition-all duration-200"
+                >
+                  See Demo
+                </Link>
+                <Link
                   href="/pricing"
                   className="cursor-pointer inline-flex items-center justify-center gap-2 bg-transparent border border-[#27272A] hover:border-[#4F46E5] text-[#F4F4F5] hover:text-white font-semibold text-sm px-6 py-3.5 rounded-xl transition-all duration-200"
                 >
