@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Wifi, Calendar } from "lucide-react";
+import { ChevronLeft, ChevronRight, Wifi, Calendar, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import StampProgress from "@/components/animations/stamp-progress";
 import NfcRipple from "@/components/animations/nfc-ripple";
 
@@ -49,7 +50,19 @@ export default function AppPreviewPage() {
   };
 
   return (
-    <main className="bg-[#09090B] min-h-screen pt-28 pb-20">
+    <main className="bg-[#09090B] min-h-screen pt-0 pb-20">
+      {/* Back to site bar */}
+      <div className="bg-[#1E1B4B] border-b border-indigo-700/30 h-8 flex items-center justify-between px-6 sticky top-0 z-50">
+        <Link
+          href="/"
+          className="flex items-center gap-1.5 text-xs text-indigo-300 hover:text-white transition-colors duration-200"
+        >
+          <ArrowLeft size={11} />
+          Back to Glyph.com
+        </Link>
+        <span className="text-xs text-indigo-500 tracking-wide">App Preview</span>
+      </div>
+      <div className="pt-20">
       <div className="max-w-2xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-10">
@@ -349,6 +362,7 @@ export default function AppPreviewPage() {
             {currentScreen + 1} / {screenCount} — {screens[currentScreen].label}
           </p>
         </div>
+      </div>
       </div>
     </main>
   );

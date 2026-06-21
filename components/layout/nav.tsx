@@ -42,11 +42,11 @@ export default function Nav() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 cursor-pointer select-none"
+            className="flex items-center gap-3 cursor-pointer select-none"
             aria-label="Glyph home"
           >
-            <GlyphMark size={24} />
-            <span className="font-[family-name:var(--font-dm-sans)] font-bold text-[#F4F4F5] text-lg tracking-tight">
+            <GlyphMark size={34} />
+            <span className="font-[family-name:var(--font-dm-sans)] font-bold text-[#F4F4F5] text-xl tracking-tight">
               Glyph
             </span>
           </Link>

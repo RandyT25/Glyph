@@ -15,6 +15,8 @@ import {
   Clock,
   XCircle,
 } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import GlyphMark from "@/components/common/glyph-mark";
 
 type Tab = "overview" | "campaigns" | "customers" | "analytics" | "settings";
@@ -109,8 +111,20 @@ export default function DashboardPreviewPage() {
 
   return (
     <main className="bg-[#09090B] min-h-screen">
+      {/* Back to site bar */}
+      <div className="bg-[#1E1B4B] border-b border-indigo-700/30 h-8 flex items-center justify-between px-6 sticky top-0 z-50">
+        <Link
+          href="/"
+          className="flex items-center gap-1.5 text-xs text-indigo-300 hover:text-white transition-colors duration-200"
+        >
+          <ArrowLeft size={11} />
+          Back to Glyph.com
+        </Link>
+        <span className="text-xs text-indigo-500 tracking-wide">Dashboard Preview</span>
+      </div>
+
       {/* Top nav */}
-      <div className="border-b border-[#27272A] bg-[#09090B] sticky top-0 z-40">
+      <div className="border-b border-[#27272A] bg-[#09090B] sticky top-8 z-40">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-14">
           <div className="flex items-center gap-3">
             <GlyphMark size={20} />
@@ -131,7 +145,7 @@ export default function DashboardPreviewPage() {
 
       <div className="max-w-7xl mx-auto flex">
         {/* Sidebar */}
-        <aside className="hidden lg:flex flex-col w-52 border-r border-[#27272A] min-h-[calc(100vh-3.5rem)] py-6 px-3 gap-1 sticky top-14">
+        <aside className="hidden lg:flex flex-col w-52 border-r border-[#27272A] min-h-[calc(100vh-3.5rem)] py-6 px-3 gap-1 sticky top-[5.5rem]">
           {[
             { label: "Overview", icon: LayoutDashboard, tab: "overview" },
             { label: "Campaigns", icon: Megaphone, tab: "campaigns" },

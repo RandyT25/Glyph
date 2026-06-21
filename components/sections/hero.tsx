@@ -18,7 +18,7 @@ export default function Hero() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="relative min-h-screen flex flex-col overflow-x-hidden bg-[#09090B]">
+    <section className="relative min-h-screen flex flex-col bg-[#09090B]">
       {/* Aurora background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         <div

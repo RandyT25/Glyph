@@ -71,7 +71,7 @@ export default function PricingTeaser() {
                 </div>
 
                 {/* Features */}
-                <ul className="flex flex-col gap-3 mb-8 flex-1">
+                <ul className="flex flex-col gap-3 mb-4 flex-1">
                   {tier.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
                       <div className="w-4 h-4 rounded-full bg-[#4F46E5]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -81,6 +81,13 @@ export default function PricingTeaser() {
                     </li>
                   ))}
                 </ul>
+
+                {/* Add-on note */}
+                {"addOnNote" in tier && tier.addOnNote && (
+                  <p className="text-xs text-[#F59E0B]/70 italic mb-5 leading-relaxed">
+                    ★ {tier.addOnNote as string}
+                  </p>
+                )}
 
                 {/* CTA */}
                 <Link
