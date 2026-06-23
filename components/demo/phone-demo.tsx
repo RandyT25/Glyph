@@ -206,45 +206,61 @@ function PhoneScreen({ screen }: { screen: string }) {
         </div>
       );
 
-    // ── Screen 2: NFC Scan ────────────────────────────────────
+    // ── Screen 2: NFC Scan — sonar pulse effect ───────────────
     case "scan":
       return (
-        <div className="flex flex-col items-center justify-center h-full gap-4 px-4 pb-[44px]">
-          <GlyphMark size={22} className="mb-1" />
+        <div className="flex flex-col items-center justify-center h-full pb-[44px] relative overflow-hidden">
 
-          {/* NFC ripple rings — pure CSS, no imports needed */}
-          <div className="relative flex items-center justify-center" style={{ width: 100, height: 100 }}>
-            {[0, 1, 2].map(i => (
+          {/* Sonar / radar pulse — 4 waves expanding from centre */}
+          <div className="relative flex items-center justify-center mb-5" style={{ width: 160, height: 160 }}>
+            {[0, 1, 2, 3].map(i => (
               <motion.div
                 key={i}
-                initial={{ scale: 0.6, opacity: 0.5 }}
-                animate={{ scale: 1.6, opacity: 0 }}
-                transition={{ duration: 1.8, delay: i * 0.55, repeat: Infinity, ease: "easeOut" }}
-                className="absolute rounded-full border border-[#4F46E5]/50"
-                style={{ width: 80, height: 80 }}
+                initial={{ scale: 0.28, opacity: 0.75 }}
+                animate={{ scale: 1, opacity: 0 }}
+                transition={{
+                  duration: 2.2,
+                  delay: i * 0.55,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                }}
+                className="absolute rounded-full"
+                style={{
+                  width: 160,
+                  height: 160,
+                  background: "rgba(79,70,229,0.14)",
+                  border: "1.5px solid rgba(99,102,241,0.45)",
+                }}
               />
             ))}
-            <div
-              className="w-14 h-14 rounded-full flex items-center justify-center z-10"
-              style={{ background: "rgba(79,70,229,0.12)", border: "2px solid rgba(79,70,229,0.4)" }}
+
+            {/* Centre — gently pulsing filled circle */}
+            <motion.div
+              animate={{ scale: [1, 1.07, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="w-[52px] h-[52px] rounded-full flex items-center justify-center z-10"
+              style={{
+                background: "linear-gradient(135deg, #5A52E8, #4040C4)",
+                boxShadow: "0 0 0 6px rgba(79,70,229,0.12), 0 0 28px rgba(79,70,229,0.45)",
+              }}
             >
-              {/* NFC waves icon */}
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#6366F1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <circle cx="12" cy="9" r="2.5" fill="#4F46E5"/>
-              </svg>
-            </div>
+              <GlyphMark size={26} color="white" showDot={false} />
+            </motion.div>
           </div>
 
-          <div className="text-center">
-            <p className="text-xs font-bold text-white mb-1 font-[family-name:var(--font-dm-sans)]">Hold near NFC stamper</p>
-            <p className="text-[9px] text-[#71717A] leading-relaxed">Your loyalty card opens automatically.<br/>No app download needed.</p>
+          <div className="text-center px-4">
+            <p className="text-xs font-bold text-white mb-1 font-[family-name:var(--font-dm-sans)]">
+              Hold near NFC stamper
+            </p>
+            <p className="text-[9px] text-[#71717A] leading-relaxed">
+              Your loyalty card opens automatically.<br />No app download needed.
+            </p>
           </div>
 
           <motion.div
             animate={{ opacity: [0.4, 1, 0.4] }}
             transition={{ duration: 1.5, repeat: Infinity }}
-            className="flex items-center gap-1.5 bg-[#4F46E5]/10 border border-[#4F46E5]/25 rounded-full px-3 py-1"
+            className="flex items-center gap-1.5 bg-[#4F46E5]/10 border border-[#4F46E5]/25 rounded-full px-3 py-1 mt-4"
           >
             <div className="w-1.5 h-1.5 rounded-full bg-[#4F46E5]" />
             <span className="text-[8px] text-[#6366F1] font-semibold">Scanning…</span>
