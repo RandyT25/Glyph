@@ -51,9 +51,9 @@ const CALLOUTS: Record<string, { icon: string; title: string; desc: string }[]> 
     { icon: "✦", title: "Feels earned and special", desc: "The experience is designed to make customers feel valued, not just tracked" },
   ],
   redeem: [
-    { icon: "✦", title: "Show QR to merchant", desc: "Customer opens their reward and shows the QR code at the counter" },
-    { icon: "✦", title: "One-tap redemption", desc: "Merchant scans or confirms — the reward is marked redeemed instantly" },
-    { icon: "✦", title: "No printing, no paper", desc: "Fully digital — no stamps to lose, no cards to forget" },
+    { icon: "✦", title: "No hardware needed", desc: "Merchant confirms entirely in the Glyph app — no scanner, no terminal" },
+    { icon: "✦", title: "One tap to confirm", desc: "Incoming redemption appears in the merchant dashboard automatically" },
+    { icon: "✦", title: "Works on any device", desc: "Merchant app runs in any browser — phone, tablet, or desktop at the counter" },
   ],
   redeemed: [
     { icon: "✦", title: "Instant confirmation for both sides", desc: "Customer and merchant both see the transaction is complete" },
@@ -84,12 +84,12 @@ function PhoneConfetti({ data }: { data: object | null }) {
 function PhoneGiftReward({ data }: { data: object | null }) {
   if (!data) return null;
   return (
-    <div className="absolute inset-0 pointer-events-none z-20 flex items-center justify-center" style={{ bottom: "56px" }}>
+    <div className="pointer-events-none flex items-center justify-center" style={{ height: 100 }}>
       <Lottie
         animationData={data}
         loop
         autoplay
-        style={{ width: "65%", height: "65%" }}
+        style={{ width: 100, height: 100 }}
         rendererSettings={{ preserveAspectRatio: "xMidYMid meet" }}
       />
     </div>
@@ -329,17 +329,9 @@ function PhoneScreen({ screen, lottieCache }: { screen: string; lottieCache: Rec
             />
           ))}
 
-          {/* Text + icon */}
-          <div className="flex-1 flex flex-col items-center justify-center gap-3 px-3 relative z-10">
-            <motion.div
-              initial={{ scale: 0.3, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 220, damping: 16, delay: 0.1 }}
-            >
-              <div className="w-14 h-14 rounded-[18px] flex items-center justify-center" style={{ background: "linear-gradient(145deg, #FBBF24 0%, #D97706 100%)", boxShadow: "0 0 22px rgba(245,158,11,0.48)" }}>
-                <GlyphMark size={30} color="white" showDot={false} />
-              </div>
-            </motion.div>
+          {/* Gift Lottie + text — inline in flex layout, no overlap */}
+          <div className="flex-1 flex flex-col items-center justify-center gap-2 px-3 relative z-10">
+            <PhoneGiftReward data={lottieCache["gift-reward"] ?? null} />
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }} className="text-center">
               <p className="text-[7px] font-semibold tracking-[0.13em] uppercase mb-1" style={{ color: "rgba(245,158,11,0.65)" }}>Card complete</p>
               <p className="text-sm font-bold text-white font-[family-name:var(--font-dm-sans)]" style={{ letterSpacing: "-0.3px" }}>Reward unlocked.</p>
@@ -366,69 +358,66 @@ function PhoneScreen({ screen, lottieCache }: { screen: string; lottieCache: Rec
             </div>
             <div className="w-full py-1.5 rounded-lg text-center text-[9px] font-semibold text-black" style={{ background: "linear-gradient(135deg, #FBBF24, #D97706)" }}>Go to my rewards</div>
           </motion.div>
-
-          {/* Gift Lottie — looping, sits above sparks but below bottom sheet */}
-          <PhoneGiftReward data={lottieCache["gift-reward"] ?? null} />
         </div>
       );
 
-    // 5 — Redeem (QR code shown to merchant)
+    // 5 — Merchant confirms redemption in their app (no scanner needed)
     case "redeem":
       return (
-        <div className="flex flex-col h-full pb-[44px] bg-[#09090B]">
-          <div className="px-3 pt-2 pb-2 border-b border-[#27272A]">
-            <p className="text-[10px] font-bold text-white font-[family-name:var(--font-dm-sans)]">My Rewards</p>
+        <div className="flex flex-col h-full bg-[#0D0D0F]">
+          {/* Merchant app header */}
+          <div className="px-3 pt-2 pb-2 border-b border-[#27272A] flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <GlyphMark size={12} />
+              <p className="text-[9px] font-bold text-white font-[family-name:var(--font-dm-sans)]">Merchant Dashboard</p>
+            </div>
+            <span className="text-[7px] font-semibold px-1.5 py-0.5 rounded-full text-[#F59E0B]" style={{ background: "rgba(245,158,11,0.12)" }}>Maison Café</span>
           </div>
-          <div className="flex-1 p-2.5 overflow-hidden flex flex-col gap-2">
-            {/* Reward card */}
-            <div className="rounded-xl overflow-hidden" style={{ border: "1.5px solid rgba(245,158,11,0.35)" }}>
-              <div className="p-2.5 flex items-start gap-2 bg-[#111113]">
-                <div className="w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center" style={{ background: "rgba(245,158,11,0.15)" }}>
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="4.5" width="11" height="8" rx="1" stroke="#F59E0B" strokeWidth="1.2"/><path d="M5 4.5V3.5a2 2 0 014 0v1" stroke="#F59E0B" strokeWidth="1.2" strokeLinecap="round"/></svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[7px] text-[#71717A]">Maison Café</p>
-                  <p className="text-[10px] font-bold text-white font-[family-name:var(--font-dm-sans)]">Free Coffee</p>
-                  <span className="text-[6.5px] font-semibold text-[#F59E0B] bg-[#F59E0B]/10 px-1.5 py-0.5 rounded-full">Ready to redeem</span>
-                </div>
-              </div>
-              {/* QR code area */}
-              <div className="bg-[#0D0D0F] p-3 flex flex-col items-center gap-1.5">
-                <div className="bg-white rounded-xl p-2.5 w-[90px] h-[90px] flex items-center justify-center">
-                  {/* QR code SVG mock */}
-                  <svg width="70" height="70" viewBox="0 0 70 70" fill="none">
-                    {/* Corner squares */}
-                    <rect x="2" y="2" width="20" height="20" rx="2" fill="#09090B"/>
-                    <rect x="4" y="4" width="16" height="16" rx="1.5" fill="white"/>
-                    <rect x="7" y="7" width="10" height="10" rx="1" fill="#09090B"/>
-                    <rect x="48" y="2" width="20" height="20" rx="2" fill="#09090B"/>
-                    <rect x="50" y="4" width="16" height="16" rx="1.5" fill="white"/>
-                    <rect x="53" y="7" width="10" height="10" rx="1" fill="#09090B"/>
-                    <rect x="2" y="48" width="20" height="20" rx="2" fill="#09090B"/>
-                    <rect x="4" y="50" width="16" height="16" rx="1.5" fill="white"/>
-                    <rect x="7" y="53" width="10" height="10" rx="1" fill="#09090B"/>
-                    {/* Data dots */}
-                    {[
-                      [26,4],[30,4],[34,4],[38,4],[26,8],[34,8],[38,8],[30,12],[34,12],
-                      [26,16],[38,16],[26,20],[30,20],[34,20],
-                      [4,26],[8,26],[16,26],[20,26],[4,30],[12,30],[20,30],[4,34],
-                      [8,34],[16,34],[4,38],[20,38],[8,42],[12,42],[16,42],[20,42],
-                      [26,26],[34,26],[42,26],[46,26],[50,26],[54,26],[58,26],[62,26],
-                      [26,30],[30,30],[42,30],[50,30],[58,30],
-                      [26,34],[34,34],[38,34],[42,34],[54,34],[62,34],
-                      [26,38],[30,38],[34,38],[46,38],[50,38],[58,38],[62,38],
-                      [26,42],[38,42],[42,42],[50,42],[54,42],
-                      [26,46],[30,46],[34,46],[38,46],[42,46],[50,46],[62,46],
-                      [26,50],[42,50],[46,50],[54,50],[58,50],
-                      [26,54],[30,54],[38,54],[42,54],[46,54],[54,54],[62,54],
-                      [26,58],[34,58],[38,58],[46,58],[50,58],[58,58],
-                      [26,62],[30,62],[34,62],[38,62],[42,62],[54,62],[58,62],[62,62],
-                    ].map(([x, y], i) => <rect key={i} x={x} y={y} width="3" height="3" rx="0.5" fill="#09090B"/>)}
+
+          <div className="flex-1 flex flex-col p-3 gap-3">
+            {/* Incoming redemption label */}
+            <div className="flex items-center gap-1.5">
+              <motion.div
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 1.2, repeat: Infinity }}
+                className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]"
+              />
+              <p className="text-[7px] font-semibold uppercase tracking-[0.12em] text-[#F59E0B]">Incoming redemption</p>
+            </div>
+
+            {/* Reward detail card */}
+            <div className="rounded-xl overflow-hidden" style={{ border: "1px solid rgba(245,158,11,0.25)", background: "rgba(245,158,11,0.06)" }}>
+              <div className="p-2.5 flex items-center gap-2">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: "rgba(245,158,11,0.15)" }}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="5" r="3" stroke="#F59E0B" strokeWidth="1.2"/>
+                    <path d="M2 13c0-2.761 2.686-5 6-5s6 2.239 6 5" stroke="#F59E0B" strokeWidth="1.2" strokeLinecap="round"/>
                   </svg>
                 </div>
-                <p className="text-[7px] text-[#71717A] text-center">Show this to the merchant</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[7px] text-[#71717A]">Customer · Coffee Loyalty Card</p>
+                  <p className="text-[11px] font-bold text-white font-[family-name:var(--font-dm-sans)]">Free Coffee</p>
+                </div>
+              </div>
+              <div className="px-2.5 pb-2.5 flex items-center gap-1">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="#52525B" strokeWidth="1"/><line x1="5" y1="3" x2="5" y2="5.5" stroke="#52525B" strokeWidth="1" strokeLinecap="round"/><circle cx="5" cy="7" r="0.5" fill="#52525B"/></svg>
+                <p className="text-[6.5px] text-[#52525B]">Earned today · 9 stamps completed</p>
               </div>
             </div>
+
+            {/* Confirm button */}
+            <motion.div
+              initial={{ y: 8, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 300, damping: 24 }}
+              className="rounded-xl py-2.5 flex items-center justify-center gap-1.5 cursor-pointer"
+              style={{ background: "linear-gradient(135deg, #FBBF24, #D97706)" }}
+            >
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.5 2.5 4.5-4.5" stroke="#09090B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <span className="text-[9px] font-bold text-black">Confirm Redemption</span>
+            </motion.div>
+
+            <button className="text-[7.5px] text-[#52525B] text-center w-full">Deny</button>
           </div>
         </div>
       );
