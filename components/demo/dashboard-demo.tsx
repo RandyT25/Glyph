@@ -45,7 +45,7 @@ const statCards = [
   { label: "Active Members", value: "2,847", change: "+12%", color: "#4F46E5" },
   { label: "Stamps Today", value: "143", change: "+8%", color: "#F59E0B" },
   { label: "Retention Rate", value: "94%", change: "+3%", color: "#10B981" },
-  { label: "Revenue Impact", value: "$14.2K", change: "+21%", color: "#8B5CF6" },
+  { label: "Rewards Issued", value: "32", change: "+18%", color: "#8B5CF6" },
 ];
 
 const activity = [

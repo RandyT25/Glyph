@@ -4,13 +4,12 @@ import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Wifi, Battery, Stamp } from "lucide-react";
 import GlyphMark from "@/components/common/glyph-mark";
-import NfcRipple from "@/components/animations/nfc-ripple";
 
 const SCREENS = [
-  { id: "wallet", label: "Wallet" },
-  { id: "tap", label: "NFC Tap" },
-  { id: "earned", label: "Stamp Earned" },
-  { id: "reward", label: "Reward" },
+  { id: "wallet",  label: "Wallet" },
+  { id: "picker",  label: "Stamp Picker" },
+  { id: "stamped", label: "Stamps Added" },
+  { id: "ember",   label: "Reward" },
   { id: "history", label: "History" },
 ];
 
@@ -20,20 +19,20 @@ const CALLOUTS: Record<string, { icon: string; title: string; desc: string }[]> 
     { icon: "✦", title: "Multi-merchant wallet", desc: "All your loyalty cards in one place" },
     { icon: "✦", title: "Real-time progress", desc: "Always know how close you are" },
   ],
-  tap: [
-    { icon: "✦", title: "Zero friction", desc: "No app download. No sign-up. Just tap." },
-    { icon: "✦", title: "Instant recognition", desc: "Verified in under a second" },
-    { icon: "✦", title: "Works on any phone", desc: "iOS and Android NFC supported" },
+  picker: [
+    { icon: "✦", title: "Choose your stamps", desc: "Select 1–9 per visit — great for multiple purchases at once" },
+    { icon: "✦", title: "Opens instantly after tap", desc: "NFC launches the picker — no app, no wait, no friction" },
+    { icon: "✦", title: "One tap, any count", desc: "Confirm and collect in a single interaction" },
   ],
-  earned: [
-    { icon: "✦", title: "Satisfying feedback", desc: "Haptic, visual, and audio confirmation" },
-    { icon: "✦", title: "Live stamp animation", desc: "Stamp flies onto your card" },
-    { icon: "✦", title: "Progress ring", desc: "See exactly how far you've come" },
+  stamped: [
+    { icon: "✦", title: "Multi-stamp confirmed", desc: "×3 badge on the icon shows exactly how many were added" },
+    { icon: "✦", title: "Progress ring updates", desc: "Card animates to the new position in real time" },
+    { icon: "✦", title: "Satisfying feedback", desc: "Haptic + visual confirmation on every stamp" },
   ],
-  reward: [
-    { icon: "✦", title: "Instant unlock", desc: "Reward triggers the moment you complete" },
-    { icon: "✦", title: "Amber glow moment", desc: "Designed to feel earned and special" },
-    { icon: "✦", title: "No expiry by default", desc: "Your reward waits until you're ready" },
+  ember: [
+    { icon: "✦", title: "Ember burst moment", desc: "Amber sparks rise as your reward unlocks — earned and special" },
+    { icon: "✦", title: "Glass bottom sheet", desc: "Reward details and one-tap redemption, no hunting required" },
+    { icon: "✦", title: "Instant unlock", desc: "Reward triggers the moment your card completes" },
   ],
   history: [
     { icon: "✦", title: "Full stamp history", desc: "Every visit, every location recorded" },
@@ -86,35 +85,20 @@ function StampGrid({ filled, total = 9, reward = false }: { filled: number; tota
   );
 }
 
-function ConfettiDot({ x, y, color, delay }: { x: number; y: number; color: string; delay: number }) {
-  return (
-    <motion.div
-      className="absolute w-2 h-2 rounded-full"
-      style={{ background: color, left: "50%", top: "40%" }}
-      initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
-      animate={{ x, y, opacity: 0, scale: 0.5 }}
-      transition={{ duration: 0.7, delay, ease: "easeOut" }}
-    />
-  );
+// Inline SVG icons to avoid pulling in lucide for tiny sizes
+function MinusIcon() {
+  return <svg width="10" height="2" viewBox="0 0 10 2" fill="none"><line x1="0.5" y1="1" x2="9.5" y2="1" stroke="#7B75F0" strokeWidth="1.8" strokeLinecap="round"/></svg>;
+}
+function PlusIcon() {
+  return <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><line x1="5" y1="0.5" x2="5" y2="9.5" stroke="#7B75F0" strokeWidth="1.8" strokeLinecap="round"/><line x1="0.5" y1="5" x2="9.5" y2="5" stroke="#7B75F0" strokeWidth="1.8" strokeLinecap="round"/></svg>;
 }
 
-const CONFETTI = [
-  { x: -50, y: -60, color: "#4F46E5", delay: 0 },
-  { x: 40, y: -70, color: "#F59E0B", delay: 0.05 },
-  { x: 60, y: -30, color: "#6366F1", delay: 0.1 },
-  { x: -60, y: -20, color: "#FCD34D", delay: 0.05 },
-  { x: -30, y: 50, color: "#4F46E5", delay: 0.1 },
-  { x: 50, y: 40, color: "#F59E0B", delay: 0 },
-  { x: 70, y: -50, color: "#E0E7FF", delay: 0.08 },
-  { x: -70, y: 30, color: "#6366F1", delay: 0.06 },
-  { x: 0, y: 70, color: "#FCD34D", delay: 0.04 },
-  { x: -40, y: -55, color: "#4F46E5", delay: 0.09 },
-  { x: 30, y: 60, color: "#F59E0B", delay: 0.07 },
-  { x: -20, y: 65, color: "#6366F1", delay: 0.03 },
-];
+const STAMP_CIRCUMFERENCE = 2 * Math.PI * 26;
 
 function PhoneScreen({ screen }: { screen: string }) {
   switch (screen) {
+
+    // ── Screen 1: Wallet ──────────────────────────────────────
     case "wallet":
       return (
         <div className="flex flex-col h-full">
@@ -137,75 +121,258 @@ function PhoneScreen({ screen }: { screen: string }) {
         </div>
       );
 
-    case "tap":
+    // ── Screen 2: Stamp Picker ────────────────────────────────
+    case "picker":
       return (
-        <div className="flex flex-col items-center justify-center h-full gap-3 px-4">
-          <div className="relative">
-            <NfcRipple className="w-20 h-20" />
-          </div>
+        <div className="flex flex-col items-center justify-center h-full gap-3 px-3">
+          <GlyphMark size={20} className="mb-0.5" />
+
           <div className="text-center">
-            <p className="text-xs font-bold text-white font-[family-name:var(--font-dm-sans)]">Hold to stamper</p>
-            <p className="text-[9px] text-[#71717A] mt-0.5">Place phone near NFC device</p>
+            <p className="text-[7px] font-semibold tracking-[0.13em] uppercase text-[#52525B] mb-0.5">Collect stamps</p>
+            <p className="text-[11px] font-bold text-white font-[family-name:var(--font-dm-sans)]">How many today?</p>
           </div>
-          <motion.div
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="flex items-center gap-1.5 bg-[#4F46E5]/10 border border-[#4F46E5]/30 rounded-full px-3 py-1"
+
+          {/* Counter row */}
+          <div className="flex items-center justify-center gap-3">
+            <div
+              className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{ border: "1px solid rgba(99,102,241,0.22)", background: "rgba(79,70,229,0.06)" }}
+            >
+              <MinusIcon />
+            </div>
+
+            {/* Counter tile */}
+            <div
+              className="w-[68px] h-[68px] rounded-[18px] flex flex-col items-center justify-center gap-0.5"
+              style={{
+                background: "linear-gradient(145deg, #1e1b4b 0%, #0f0e1e 100%)",
+                border: "1px solid rgba(99,102,241,0.2)",
+                boxShadow: "0 4px 16px rgba(79,70,229,0.22)",
+              }}
+            >
+              <GlyphMark size={13} color="rgba(99,102,241,0.3)" showDot={false} />
+              <span
+                className="text-[26px] font-bold text-white leading-none font-[family-name:var(--font-dm-sans)]"
+                style={{ letterSpacing: "-1px" }}
+              >
+                3
+              </span>
+            </div>
+
+            <div
+              className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{ border: "1px solid rgba(99,102,241,0.22)", background: "rgba(79,70,229,0.06)" }}
+            >
+              <PlusIcon />
+            </div>
+          </div>
+
+          {/* CTA */}
+          <button
+            className="w-full py-2.5 rounded-xl text-[10px] font-semibold text-white"
+            style={{
+              background: "linear-gradient(135deg, #6366F1, #4F46E5)",
+              boxShadow: "0 3px 12px rgba(79,70,229,0.35)",
+            }}
           >
-            <div className="w-1.5 h-1.5 rounded-full bg-[#4F46E5]" />
-            <span className="text-[9px] text-[#6366F1] font-semibold">Scanning…</span>
-          </motion.div>
+            Collect 3 stamps →
+          </button>
         </div>
       );
 
-    case "earned":
+    // ── Screen 3: Stamps Added ────────────────────────────────
+    case "stamped":
       return (
-        <div className="flex flex-col items-center justify-center h-full gap-2 relative">
-          {CONFETTI.map((c, i) => <ConfettiDot key={i} {...c} />)}
+        <div className="flex flex-col items-center justify-center h-full gap-2.5 relative px-4">
+          {/* Glyph mark springs in from above */}
           <motion.div
-            initial={{ scale: 0, rotate: -20 }}
-            animate={{ scale: 1, rotate: 0 }}
+            initial={{ y: -40, scale: 0.5, rotate: -15, opacity: 0 }}
+            animate={{ y: 0, scale: 1, rotate: 0, opacity: 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 18 }}
-            className="w-14 h-14 rounded-2xl bg-[#4F46E5] flex items-center justify-center shadow-lg shadow-indigo-500/40"
+            className="relative"
           >
-            <GlyphMark size={30} color="white" />
+            <div className="w-14 h-14 rounded-2xl bg-[#4F46E5] flex items-center justify-center shadow-lg shadow-indigo-500/40">
+              <GlyphMark size={30} color="white" />
+            </div>
+            {/* ×3 badge pops in */}
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.35, type: "spring", stiffness: 400, damping: 18 }}
+              className="absolute -top-2 -right-2 w-[22px] h-[22px] rounded-full flex items-center justify-center"
+              style={{ background: "#F59E0B", boxShadow: "0 0 0 2px #09090B" }}
+            >
+              <span className="text-[8px] font-bold text-black leading-none">×3</span>
+            </motion.div>
           </motion.div>
-          <div className="text-center">
-            <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="text-sm font-bold text-white font-[family-name:var(--font-dm-sans)]">Stamp #6 Earned!</motion.p>
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }} className="text-[9px] text-[#71717A]">3 more to your free coffee</motion.p>
-          </div>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="w-full px-4">
-            <div className="relative">
-              <svg viewBox="0 0 100 6" className="w-full">
-                <rect x="0" y="0" width="100" height="6" rx="3" fill="#27272A" />
-                <motion.rect x="0" y="0" width="0" height="6" rx="3" fill="#4F46E5" initial={{ width: 0 }} animate={{ width: "66.6" }} transition={{ delay: 0.4, duration: 0.5 }} />
-              </svg>
-              <p className="text-[8px] text-[#71717A] text-center mt-1">6 / 9 stamps</p>
+
+          {/* Text fades up */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-center"
+          >
+            <p className="text-sm font-bold text-white font-[family-name:var(--font-dm-sans)]">3 stamps added!</p>
+            <p className="text-[9px] text-[#71717A]">3 more to your free coffee</p>
+          </motion.div>
+
+          {/* Progress ring animates to 6/9 */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.45 }}
+            className="relative w-16 h-16"
+          >
+            <svg viewBox="0 0 64 64" className="w-16 h-16 -rotate-90">
+              <circle cx="32" cy="32" r="26" fill="none" stroke="#27272A" strokeWidth="3" />
+              <motion.circle
+                cx="32" cy="32" r="26"
+                fill="none"
+                stroke="#4F46E5"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeDasharray={STAMP_CIRCUMFERENCE}
+                initial={{ strokeDashoffset: STAMP_CIRCUMFERENCE }}
+                animate={{ strokeDashoffset: STAMP_CIRCUMFERENCE * (1 - 6 / 9) }}
+                transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-xs font-bold text-white leading-none font-[family-name:var(--font-dm-sans)]">6</span>
+              <span className="text-[7px] text-[#71717A]">of 9</span>
             </div>
           </motion.div>
         </div>
       );
 
-    case "reward":
+    // ── Screen 4: Ember Burst Reward ──────────────────────────
+    case "ember":
       return (
-        <div className="flex flex-col items-center justify-center h-full gap-2 relative">
-          <motion.div className="absolute inset-0 rounded-2xl" animate={{ boxShadow: ["0 0 0px rgba(245,158,11,0)", "0 0 40px rgba(245,158,11,0.3)", "0 0 0px rgba(245,158,11,0)"] }} transition={{ duration: 2, repeat: Infinity }} />
-          <motion.div animate={{ scale: [1, 1.06, 1] }} transition={{ duration: 1.5, repeat: Infinity }}>
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "linear-gradient(135deg, #F59E0B, #FCD34D)" }}>
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="white" />
-              </svg>
+        <div
+          className="flex flex-col h-full relative overflow-hidden"
+          style={{ background: "radial-gradient(ellipse 90% 55% at 50% 36%, rgba(245,158,11,0.13) 0%, transparent 72%)" }}
+        >
+          {/* Rising ember particles */}
+          {[
+            { left: "14%", size: 2.5, dur: 2.8, delay: 0.2, op: 0.7 },
+            { left: "27%", size: 2,   dur: 3.2, delay: 0.6, op: 0.5 },
+            { left: "41%", size: 3,   dur: 2.4, delay: 0.1, op: 0.6 },
+            { left: "59%", size: 2,   dur: 3.5, delay: 0.8, op: 0.5 },
+            { left: "73%", size: 3,   dur: 2.6, delay: 0.4, op: 0.65 },
+            { left: "85%", size: 2.5, dur: 3.0, delay: 0.9, op: 0.45 },
+            { left: "20%", size: 2,   dur: 3.8, delay: 1.3, op: 0.4 },
+            { left: "66%", size: 2.5, dur: 2.9, delay: 1.0, op: 0.55 },
+          ].map((e, i) => (
+            <motion.div
+              key={i}
+              initial={{ y: "110%", opacity: 0 }}
+              animate={{ y: "-15%", opacity: [0, e.op, 0] }}
+              transition={{ duration: e.dur, delay: e.delay, repeat: Infinity, ease: "easeOut" }}
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                left: e.left,
+                bottom: 0,
+                width: e.size,
+                height: e.size,
+                background: "#F59E0B",
+                boxShadow: `0 0 ${e.size * 2}px rgba(245,158,11,0.5)`,
+              }}
+            />
+          ))}
+
+          {/* Hero: amber Glyph mark + pulsing rings */}
+          <div className="flex-1 flex flex-col items-center justify-center gap-3 px-3 relative z-10">
+            <motion.div
+              initial={{ scale: 0.3, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 220, damping: 16, delay: 0.1 }}
+              className="relative"
+            >
+              {[0, 1].map(i => (
+                <motion.div
+                  key={i}
+                  initial={{ scale: 1, opacity: 0 }}
+                  animate={{ scale: [1, 1.65, 2.1], opacity: [0.45, 0.2, 0] }}
+                  transition={{ duration: 1.8, delay: 0.3 + i * 0.32, repeat: Infinity, repeatDelay: 0.4 }}
+                  className="absolute inset-0 rounded-[18px] pointer-events-none"
+                  style={{ background: "rgba(245,158,11,0.22)", margin: "-3px" }}
+                />
+              ))}
+              <div
+                className="w-14 h-14 rounded-[18px] flex items-center justify-center"
+                style={{
+                  background: "linear-gradient(145deg, #FBBF24 0%, #D97706 100%)",
+                  boxShadow: "0 0 22px rgba(245,158,11,0.48)",
+                }}
+              >
+                <GlyphMark size={30} color="white" showDot={false} />
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.22 }}
+              className="text-center"
+            >
+              <p
+                className="text-[7px] font-semibold tracking-[0.13em] uppercase mb-1"
+                style={{ color: "rgba(245,158,11,0.65)" }}
+              >
+                Card complete
+              </p>
+              <p
+                className="text-sm font-bold text-white font-[family-name:var(--font-dm-sans)]"
+                style={{ letterSpacing: "-0.3px" }}
+              >
+                Reward unlocked.
+              </p>
+            </motion.div>
+          </div>
+
+          {/* Glass bottom sheet */}
+          <motion.div
+            initial={{ y: 56, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 280, damping: 28, delay: 0.18 }}
+            className="mx-2 mb-3 rounded-xl p-2.5 relative z-10"
+            style={{
+              background: "rgba(13,13,18,0.97)",
+              border: "1px solid rgba(245,158,11,0.2)",
+              backdropFilter: "blur(12px)",
+            }}
+          >
+            <div
+              className="flex items-center gap-2 mb-2.5 pb-2"
+              style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+            >
+              <div
+                className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center"
+                style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.2)" }}
+              >
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                  <path d="M1.5 4.5a.75.75 0 01.75-.75h8.5a.75.75 0 01.75.75v1a1 1 0 000 2v1a.75.75 0 01-.75.75h-8.5A.75.75 0 011.5 9.5v-1a1 1 0 000-2v-1z" stroke="#F59E0B" strokeWidth="1.1" />
+                  <line x1="4.5" y1="3.8" x2="4.5" y2="9.8" stroke="#F59E0B" strokeWidth="1" strokeLinecap="round" strokeDasharray="1.5 1.5" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[7px] text-[#52525B]">Your reward</p>
+                <p className="text-[10px] font-bold text-white font-[family-name:var(--font-dm-sans)] truncate">Free Coffee</p>
+                <p className="text-[6.5px]" style={{ color: "rgba(245,158,11,0.65)" }}>Show to merchant</p>
+              </div>
+            </div>
+            <div
+              className="w-full py-1.5 rounded-lg text-center text-[9px] font-semibold text-black"
+              style={{ background: "linear-gradient(135deg, #FBBF24, #D97706)" }}
+            >
+              Go to my rewards
             </div>
           </motion.div>
-          <div className="text-center px-3">
-            <p className="text-sm font-bold text-[#F59E0B] font-[family-name:var(--font-dm-sans)]">Reward Unlocked!</p>
-            <p className="text-[10px] text-white font-semibold mt-0.5">Free Coffee</p>
-            <p className="text-[8px] text-[#71717A] mt-0.5">Show this screen to redeem</p>
-          </div>
-          <StampGrid filled={9} reward={true} />
         </div>
       );
 
+    // ── Screen 5: History ─────────────────────────────────────
     case "history":
       return (
         <div className="flex flex-col h-full">
@@ -259,6 +426,7 @@ export default function PhoneDemo() {
     if (paused || shouldReduceMotion) return;
     intervalRef.current = setInterval(next, 3000);
     return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, paused, shouldReduceMotion]);
 
   const currentCallouts = CALLOUTS[SCREENS[screen].id] ?? [];
@@ -271,7 +439,6 @@ export default function PhoneDemo() {
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
-        {/* Phone frame */}
         <div className="relative w-[220px] h-[440px] bg-[#09090B] rounded-[36px] border-2 border-[#27272A] shadow-2xl shadow-black/60 overflow-hidden">
           {/* Notch */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#09090B] rounded-b-2xl z-10" />

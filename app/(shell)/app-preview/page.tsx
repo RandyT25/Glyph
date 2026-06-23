@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Wifi, Calendar, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import StampProgress from "@/components/animations/stamp-progress";
-import NfcRipple from "@/components/animations/nfc-ripple";
 
 type Screen = 0 | 1 | 2 | 3 | 4;
 
@@ -18,8 +17,8 @@ interface ScreenConfig {
 
 const screens: ScreenConfig[] = [
   { id: 0, label: "Home" },
-  { id: 1, label: "Tap" },
-  { id: 2, label: "Stamp Earned" },
+  { id: 1, label: "Stamp Picker" },
+  { id: 2, label: "Stamps Added" },
   { id: 3, label: "Reward" },
   { id: 4, label: "History" },
 ];
@@ -169,108 +168,161 @@ export default function AppPreviewPage() {
                       </div>
                     )}
 
-                    {/* Screen 1: Tap */}
+                    {/* Screen 1: Stamp Picker */}
                     {currentScreen === 1 && (
-                      <div className="flex flex-col items-center justify-center h-full px-6 gap-6">
-                        <h2 className="font-[family-name:var(--font-dm-sans)] text-xl font-bold text-[#F4F4F5] text-center">
-                          Hold near stamper
-                        </h2>
-                        <div className="relative flex items-center justify-center">
-                          <NfcRipple />
+                      <div className="flex flex-col items-center justify-center h-full px-8 gap-6">
+                        <div className="text-center">
+                          <p className="text-xs font-semibold tracking-[0.14em] uppercase text-[#52525B] mb-1">Collect stamps</p>
+                          <h2 className="font-[family-name:var(--font-dm-sans)] text-xl font-bold text-[#F4F4F5]">How many today?</h2>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-[#4F46E5] animate-pulse" />
-                          <p className="text-sm text-[#71717A]">Detecting...</p>
+
+                        <div className="flex items-center justify-center gap-5">
+                          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ border: "1px solid rgba(99,102,241,0.22)", background: "rgba(79,70,229,0.06)" }}>
+                            <svg width="14" height="2" viewBox="0 0 14 2" fill="none" aria-hidden="true"><line x1="0.5" y1="1" x2="13.5" y2="1" stroke="#7B75F0" strokeWidth="2" strokeLinecap="round"/></svg>
+                          </div>
+
+                          <motion.div
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                            className="w-[120px] h-[120px] rounded-[26px] flex flex-col items-center justify-center gap-1.5"
+                            style={{ background: "linear-gradient(145deg, #1e1b4b 0%, #0f0e1e 100%)", border: "1px solid rgba(99,102,241,0.2)", boxShadow: "0 8px 32px rgba(79,70,229,0.25)" }}
+                          >
+                            <svg width="22" height="22" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+                              <line x1="38" y1="14" x2="38" y2="106" stroke="rgba(99,102,241,0.3)" strokeWidth="8" strokeLinecap="round"/>
+                              <line x1="38" y1="60" x2="90" y2="16" stroke="rgba(99,102,241,0.3)" strokeWidth="8" strokeLinecap="round"/>
+                              <line x1="38" y1="60" x2="90" y2="104" stroke="rgba(99,102,241,0.3)" strokeWidth="8" strokeLinecap="round"/>
+                            </svg>
+                            <span className="text-5xl font-bold text-white font-[family-name:var(--font-dm-sans)] leading-none" style={{ letterSpacing: "-2px" }}>3</span>
+                          </motion.div>
+
+                          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ border: "1px solid rgba(99,102,241,0.22)", background: "rgba(79,70,229,0.06)" }}>
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><line x1="7" y1="0.5" x2="7" y2="13.5" stroke="#7B75F0" strokeWidth="2" strokeLinecap="round"/><line x1="0.5" y1="7" x2="13.5" y2="7" stroke="#7B75F0" strokeWidth="2" strokeLinecap="round"/></svg>
+                          </div>
                         </div>
-                        <p className="text-xs text-[#52525B] text-center max-w-[200px]">
-                          Place your phone within 2cm of the Glyph stamper on the counter.
-                        </p>
+
+                        <button className="w-full py-4 rounded-2xl font-semibold text-white text-base" style={{ background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)", boxShadow: "0 6px 28px rgba(79,70,229,0.38)" }}>
+                          Collect 3 stamps →
+                        </button>
+                        <p className="text-xs text-[#52525B] text-center">Tap the button then hold near the NFC stamper</p>
                       </div>
                     )}
 
-                    {/* Screen 2: Stamp earned */}
+                    {/* Screen 2: Stamps Added */}
                     {currentScreen === 2 && (
                       <div className="flex flex-col items-center px-6 gap-5">
                         <motion.div
-                          initial={{ scale: 0, rotate: -20 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={{ type: "spring", stiffness: 300, damping: 20, delay: 0.1 }}
-                          className="w-16 h-16 rounded-2xl bg-[#4F46E5] flex items-center justify-center shadow-xl shadow-indigo-500/30"
+                          initial={{ y: -60, scale: 0.4, rotate: -20, opacity: 0 }}
+                          animate={{ y: 0, scale: 1, rotate: 0, opacity: 1 }}
+                          transition={{ type: "spring", stiffness: 280, damping: 18, delay: 0.1 }}
+                          className="relative mt-4"
                         >
-                          <svg width="28" height="28" viewBox="0 0 120 120" fill="none" aria-hidden="true">
-                            <line x1="38" y1="14" x2="38" y2="106" stroke="white" strokeWidth="8" strokeLinecap="round" />
-                            <line x1="38" y1="60" x2="90" y2="16" stroke="white" strokeWidth="8" strokeLinecap="round" />
-                            <line x1="38" y1="60" x2="90" y2="104" stroke="white" strokeWidth="8" strokeLinecap="round" />
-                            <circle cx="90" cy="16" r="14" fill="#FCD34D" />
-                          </svg>
+                          <div className="w-20 h-20 rounded-2xl bg-[#4F46E5] flex items-center justify-center shadow-xl shadow-indigo-500/30">
+                            <svg width="40" height="40" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+                              <line x1="38" y1="14" x2="38" y2="106" stroke="white" strokeWidth="8" strokeLinecap="round"/>
+                              <line x1="38" y1="60" x2="90" y2="16" stroke="white" strokeWidth="8" strokeLinecap="round"/>
+                              <line x1="38" y1="60" x2="90" y2="104" stroke="white" strokeWidth="8" strokeLinecap="round"/>
+                              <circle cx="90" cy="16" r="14" fill="#FCD34D"/>
+                            </svg>
+                          </div>
+                          <motion.div
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 0.42, type: "spring", stiffness: 400, damping: 18 }}
+                            className="absolute -top-3 -right-3 w-9 h-9 rounded-full flex items-center justify-center"
+                            style={{ background: "#F59E0B", boxShadow: "0 0 0 3px #09090B" }}
+                          >
+                            <span className="text-sm font-bold text-black leading-none">×3</span>
+                          </motion.div>
                         </motion.div>
 
-                        {/* Confetti dots */}
-                        <div className="absolute inset-x-0 flex justify-center overflow-hidden pointer-events-none" style={{ top: 120 }} aria-hidden="true">
-                          {Array.from({ length: 12 }).map((_, i) => (
-                            <motion.div
-                              key={i}
-                              className="absolute w-2 h-2 rounded-full"
-                              style={{
-                                background: i % 3 === 0 ? "#4F46E5" : i % 3 === 1 ? "#F59E0B" : "#6366F1",
-                                left: `${20 + i * 5}%`,
-                              }}
-                              initial={{ y: 0, opacity: 1 }}
-                              animate={{ y: 80, opacity: 0, x: (i % 2 === 0 ? 1 : -1) * (10 + i * 3) }}
-                              transition={{ duration: 0.8, delay: i * 0.05 }}
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="text-center">
+                          <p className="text-xs text-[#52525B] mb-1">Maison Café</p>
+                          <h2 className="font-[family-name:var(--font-dm-sans)] text-2xl font-bold text-[#F4F4F5]">3 stamps added!</h2>
+                        </motion.div>
+
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.44 }} className="relative w-28 h-28">
+                          <svg viewBox="0 0 112 112" className="w-28 h-28 -rotate-90">
+                            <circle cx="56" cy="56" r="46" fill="none" stroke="#27272A" strokeWidth="5"/>
+                            <motion.circle
+                              cx="56" cy="56" r="46" fill="none" stroke="#4F46E5" strokeWidth="5" strokeLinecap="round"
+                              strokeDasharray={2 * Math.PI * 46}
+                              initial={{ strokeDashoffset: 2 * Math.PI * 46 }}
+                              animate={{ strokeDashoffset: 2 * Math.PI * 46 * (1 - 6 / 8) }}
+                              transition={{ duration: 0.55, delay: 0.5, ease: "easeOut" }}
                             />
-                          ))}
-                        </div>
+                          </svg>
+                          <div className="absolute inset-0 flex flex-col items-center justify-center">
+                            <span className="text-2xl font-bold text-white font-[family-name:var(--font-dm-sans)]">6</span>
+                            <span className="text-xs text-[#71717A]">of 8</span>
+                          </div>
+                        </motion.div>
 
-                        <div className="text-center">
-                          <p className="text-xs text-[#52525B] mb-1">Stamp earned!</p>
-                          <h2 className="font-[family-name:var(--font-dm-sans)] text-2xl font-bold text-[#F4F4F5]">
-                            Maison Café
-                          </h2>
-                        </div>
-
-                        <div className="w-full">
-                          <StampProgress filledCount={6} />
-                          <p className="text-xs text-center text-[#71717A] mt-2">
-                            6/8 — 2 more for a free coffee!
-                          </p>
-                        </div>
+                        <p className="text-sm text-[#71717A]">2 more for a free coffee!</p>
                       </div>
                     )}
 
-                    {/* Screen 3: Reward */}
+                    {/* Screen 3: Ember Burst Reward */}
                     {currentScreen === 3 && (
                       <div
-                        className="flex flex-col items-center justify-center h-full px-6 gap-5 relative"
-                        style={{
-                          background: "radial-gradient(ellipse at center, rgba(245,158,11,0.15) 0%, transparent 70%)",
-                        }}
+                        className="flex flex-col h-full relative overflow-hidden"
+                        style={{ background: "radial-gradient(ellipse 80% 55% at 50% 36%, rgba(245,158,11,0.13) 0%, transparent 68%)" }}
                       >
-                        <motion.div
-                          initial={{ scale: 0.5, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                          className="text-center"
-                        >
-                          <div className="text-5xl mb-4">🎉</div>
-                          <div className="inline-block bg-[#F59E0B] rounded-2xl px-6 py-2 mb-4">
-                            <p className="font-[family-name:var(--font-dm-sans)] text-lg font-black text-[#09090B] tracking-wide">
-                              FREE COFFEE UNLOCKED
-                            </p>
-                          </div>
-                          <p className="text-sm text-[#A1A1AA] mb-6">
-                            Show this screen to your barista.
-                          </p>
+                        {[
+                          { left: "12%", size: 4, dur: 3.0, delay: 0.2, op: 0.65 },
+                          { left: "26%", size: 3,   dur: 3.5, delay: 0.7, op: 0.5 },
+                          { left: "42%", size: 5,   dur: 2.6, delay: 0.1, op: 0.55 },
+                          { left: "58%", size: 3,   dur: 3.8, delay: 0.9, op: 0.5 },
+                          { left: "72%", size: 4,   dur: 2.8, delay: 0.4, op: 0.6 },
+                          { left: "86%", size: 3.5, dur: 3.2, delay: 1.0, op: 0.45 },
+                          { left: "20%", size: 3,   dur: 4.0, delay: 1.4, op: 0.4 },
+                          { left: "65%", size: 4,   dur: 3.1, delay: 1.1, op: 0.5 },
+                        ].map((e, i) => (
+                          <motion.div
+                            key={i}
+                            initial={{ y: "110%", opacity: 0 }}
+                            animate={{ y: "-15%", opacity: [0, e.op, 0] }}
+                            transition={{ duration: e.dur, delay: e.delay, repeat: Infinity, ease: "easeOut" }}
+                            className="absolute rounded-full pointer-events-none"
+                            style={{ left: e.left, bottom: 0, width: e.size, height: e.size, background: "#F59E0B", boxShadow: `0 0 ${e.size * 2.5}px rgba(245,158,11,0.5)` }}
+                          />
+                        ))}
 
-                          {/* Redemption code */}
-                          <div className="bg-[#111113] border border-[#F59E0B]/30 rounded-xl px-8 py-4 mb-4">
-                            <p className="text-xs text-[#52525B] mb-1">Redemption Code</p>
-                            <p className="font-mono text-2xl font-bold text-[#F59E0B] tracking-widest">
-                              GLYPH-7X4K
-                            </p>
-                          </div>
+                        <div className="flex-1 flex flex-col items-center justify-center gap-5 px-6 relative z-10">
+                          <motion.div initial={{ scale: 0.3, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 220, damping: 16, delay: 0.08 }} className="relative">
+                            {[0, 1].map(i => (
+                              <motion.div key={i} initial={{ scale: 1, opacity: 0 }} animate={{ scale: [1, 1.6, 2.1], opacity: [0.45, 0.2, 0] }} transition={{ duration: 1.8, delay: 0.3 + i * 0.32, repeat: Infinity, repeatDelay: 0.4 }} className="absolute inset-0 rounded-3xl pointer-events-none" style={{ background: "rgba(245,158,11,0.22)", margin: "-4px" }} />
+                            ))}
+                            <div className="w-24 h-24 rounded-3xl flex items-center justify-center" style={{ background: "linear-gradient(145deg, #FBBF24 0%, #D97706 100%)", boxShadow: "0 0 40px rgba(245,158,11,0.48)" }}>
+                              <svg width="52" height="52" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+                                <line x1="38" y1="14" x2="38" y2="106" stroke="white" strokeWidth="8" strokeLinecap="round"/>
+                                <line x1="38" y1="60" x2="90" y2="16" stroke="white" strokeWidth="8" strokeLinecap="round"/>
+                                <line x1="38" y1="60" x2="90" y2="104" stroke="white" strokeWidth="8" strokeLinecap="round"/>
+                              </svg>
+                            </div>
+                          </motion.div>
 
-                          <p className="text-xs text-[#52525B]">Valid until Jun 28, 2026</p>
+                          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-center">
+                            <p className="text-xs font-semibold tracking-[0.16em] uppercase mb-2" style={{ color: "rgba(245,158,11,0.65)" }}>Card complete</p>
+                            <h2 className="font-[family-name:var(--font-dm-sans)] text-3xl font-bold text-white" style={{ letterSpacing: "-0.5px" }}>Reward<br/>unlocked.</h2>
+                          </motion.div>
+                        </div>
+
+                        <motion.div initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 260, damping: 28, delay: 0.2 }} className="mx-4 mb-6 rounded-2xl p-5 relative z-10" style={{ background: "rgba(13,13,18,0.97)", border: "1px solid rgba(245,158,11,0.2)", backdropFilter: "blur(16px)" }}>
+                          <div className="flex items-center gap-3 mb-4 pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                            <div className="w-10 h-10 rounded-xl flex-shrink-0 flex items-center justify-center" style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.2)" }}>
+                              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                                <path d="M2.5 6.5a1 1 0 011-1h11a1 1 0 011 1v1.25a1.25 1.25 0 000 2.5V11.5a1 1 0 01-1 1h-11a1 1 0 01-1-1V10.25a1.25 1.25 0 000-2.5V6.5z" stroke="#F59E0B" strokeWidth="1.4"/>
+                                <line x1="6.5" y1="6" x2="6.5" y2="12.5" stroke="#F59E0B" strokeWidth="1.2" strokeLinecap="round" strokeDasharray="1.8 1.8"/>
+                              </svg>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs text-[#52525B] mb-0.5">Your reward</p>
+                              <p className="text-base font-bold text-white font-[family-name:var(--font-dm-sans)]">Free Coffee</p>
+                              <p className="text-xs mt-0.5" style={{ color: "rgba(245,158,11,0.7)" }}>Show to merchant at the counter</p>
+                            </div>
+                          </div>
+                          <button className="w-full py-3.5 rounded-xl font-semibold text-[#09090B] text-sm" style={{ background: "linear-gradient(135deg, #FBBF24, #D97706)" }}>Go to my rewards</button>
                         </motion.div>
                       </div>
                     )}
