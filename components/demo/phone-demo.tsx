@@ -11,7 +11,7 @@ const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 const SCREENS = [
   { id: "wallet",  label: "Wallet" },
-  { id: "picker",  label: "Stamp Picker" },
+  { id: "scan",    label: "NFC Scan" },
   { id: "stamped", label: "Stamps Added" },
   { id: "ember",   label: "Reward" },
   { id: "history", label: "History" },
@@ -23,10 +23,10 @@ const CALLOUTS: Record<string, { icon: string; title: string; desc: string }[]> 
     { icon: "✦", title: "Multi-merchant wallet", desc: "All your loyalty cards in one place" },
     { icon: "✦", title: "Real-time progress", desc: "Always know how close you are" },
   ],
-  picker: [
-    { icon: "✦", title: "Choose your stamps", desc: "Select 1–9 per visit — great for multiple purchases at once" },
-    { icon: "✦", title: "Opens instantly after tap", desc: "NFC launches the picker — no app, no wait, no friction" },
-    { icon: "✦", title: "One tap, any count", desc: "Confirm and collect in a single interaction" },
+  scan: [
+    { icon: "✦", title: "Zero friction", desc: "No app download. No sign-up required. Just tap your phone." },
+    { icon: "✦", title: "Works on any phone", desc: "iOS and Android NFC supported out of the box" },
+    { icon: "✦", title: "Instant confirmation", desc: "Stamp verified and added in under a second" },
   ],
   stamped: [
     { icon: "✦", title: "Confetti on every stamp", desc: "Satisfying celebration plays the moment a stamp is confirmed" },
@@ -103,7 +103,8 @@ const STAMP_CIRCUMFERENCE = 2 * Math.PI * 26;
 function PhoneConfetti() {
   const [data, setData] = useState<object | null>(null);
   useEffect(() => {
-    fetch("/animations/confetti.json").then(r => r.json()).then(setData).catch(() => {});
+    // basePath /Glyph must be prepended — Next.js doesn't do this automatically for client fetch()
+    fetch("/Glyph/animations/confetti.json").then(r => r.json()).then(setData).catch(() => {});
   }, []);
   if (!data) return null;
   return (
@@ -205,30 +206,49 @@ function PhoneScreen({ screen }: { screen: string }) {
         </div>
       );
 
-    // ── Screen 2: Stamp Picker ────────────────────────────────
-    case "picker":
+    // ── Screen 2: NFC Scan ────────────────────────────────────
+    case "scan":
       return (
-        <div className="flex flex-col items-center justify-center h-full gap-3 px-3 pb-[44px]">
-          <GlyphMark size={20} className="mb-0.5" />
+        <div className="flex flex-col items-center justify-center h-full gap-4 px-4 pb-[44px]">
+          <GlyphMark size={22} className="mb-1" />
+
+          {/* NFC ripple rings — pure CSS, no imports needed */}
+          <div className="relative flex items-center justify-center" style={{ width: 100, height: 100 }}>
+            {[0, 1, 2].map(i => (
+              <motion.div
+                key={i}
+                initial={{ scale: 0.6, opacity: 0.5 }}
+                animate={{ scale: 1.6, opacity: 0 }}
+                transition={{ duration: 1.8, delay: i * 0.55, repeat: Infinity, ease: "easeOut" }}
+                className="absolute rounded-full border border-[#4F46E5]/50"
+                style={{ width: 80, height: 80 }}
+              />
+            ))}
+            <div
+              className="w-14 h-14 rounded-full flex items-center justify-center z-10"
+              style={{ background: "rgba(79,70,229,0.12)", border: "2px solid rgba(79,70,229,0.4)" }}
+            >
+              {/* NFC waves icon */}
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#6366F1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="12" cy="9" r="2.5" fill="#4F46E5"/>
+              </svg>
+            </div>
+          </div>
+
           <div className="text-center">
-            <p className="text-[7px] font-semibold tracking-[0.13em] uppercase text-[#52525B] mb-0.5">Collect stamps</p>
-            <p className="text-[11px] font-bold text-white font-[family-name:var(--font-dm-sans)]">How many today?</p>
+            <p className="text-xs font-bold text-white mb-1 font-[family-name:var(--font-dm-sans)]">Hold near NFC stamper</p>
+            <p className="text-[9px] text-[#71717A] leading-relaxed">Your loyalty card opens automatically.<br/>No app download needed.</p>
           </div>
-          <div className="flex items-center justify-center gap-3">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ border: "1px solid rgba(99,102,241,0.22)", background: "rgba(79,70,229,0.06)" }}>
-              <MinusIcon />
-            </div>
-            <div className="w-[68px] h-[68px] rounded-[18px] flex flex-col items-center justify-center gap-0.5" style={{ background: "linear-gradient(145deg, #1e1b4b 0%, #0f0e1e 100%)", border: "1px solid rgba(99,102,241,0.2)", boxShadow: "0 4px 16px rgba(79,70,229,0.22)" }}>
-              <GlyphMark size={13} color="rgba(99,102,241,0.3)" showDot={false} />
-              <span className="text-[26px] font-bold text-white leading-none font-[family-name:var(--font-dm-sans)]" style={{ letterSpacing: "-1px" }}>3</span>
-            </div>
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ border: "1px solid rgba(99,102,241,0.22)", background: "rgba(79,70,229,0.06)" }}>
-              <PlusIcon />
-            </div>
-          </div>
-          <button className="w-full py-2.5 rounded-xl text-[10px] font-semibold text-white" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 3px 12px rgba(79,70,229,0.35)" }}>
-            Collect 3 stamps →
-          </button>
+
+          <motion.div
+            animate={{ opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="flex items-center gap-1.5 bg-[#4F46E5]/10 border border-[#4F46E5]/25 rounded-full px-3 py-1"
+          >
+            <div className="w-1.5 h-1.5 rounded-full bg-[#4F46E5]" />
+            <span className="text-[8px] text-[#6366F1] font-semibold">Scanning…</span>
+          </motion.div>
         </div>
       );
 
