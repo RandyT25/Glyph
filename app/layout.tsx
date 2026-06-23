@@ -18,18 +18,24 @@ export const metadata: Metadata = {
   title: "Glyph — NFC Loyalty Platform",
   description:
     "Replace paper stamp cards with beautiful NFC-powered digital rewards. Turn every customer visit into lasting loyalty.",
+  metadataBase: new URL("https://useglyph.com"),
   openGraph: {
     title: "Glyph — NFC Loyalty Platform",
     description:
       "Replace paper stamp cards with beautiful NFC-powered digital rewards.",
     type: "website",
     siteName: "Glyph",
+    url: "https://useglyph.com",
   },
   twitter: {
     card: "summary_large_image",
     title: "Glyph — NFC Loyalty Platform",
     description:
       "Replace paper stamp cards with beautiful NFC-powered digital rewards.",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

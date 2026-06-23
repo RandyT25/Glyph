@@ -2,8 +2,12 @@
 
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Wifi, Battery, Stamp } from "lucide-react";
+import { ChevronLeft, ChevronRight, Wifi, Battery, Stamp, Wallet, MapPin, Bell, User } from "lucide-react";
+import dynamic from "next/dynamic";
 import GlyphMark from "@/components/common/glyph-mark";
+
+// Lottie — browser-only, loaded lazily
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 const SCREENS = [
   { id: "wallet",  label: "Wallet" },
@@ -15,7 +19,7 @@ const SCREENS = [
 
 const CALLOUTS: Record<string, { icon: string; title: string; desc: string }[]> = {
   wallet: [
-    { icon: "✦", title: "Digital loyalty cards", desc: "One tap replaces every paper card" },
+    { icon: "✦", title: "Digital loyalty cards", desc: "Brand-coloured card per merchant, circular stamp dots, reward banner" },
     { icon: "✦", title: "Multi-merchant wallet", desc: "All your loyalty cards in one place" },
     { icon: "✦", title: "Real-time progress", desc: "Always know how close you are" },
   ],
@@ -25,9 +29,9 @@ const CALLOUTS: Record<string, { icon: string; title: string; desc: string }[]> 
     { icon: "✦", title: "One tap, any count", desc: "Confirm and collect in a single interaction" },
   ],
   stamped: [
-    { icon: "✦", title: "Multi-stamp confirmed", desc: "×3 badge on the icon shows exactly how many were added" },
+    { icon: "✦", title: "Confetti on every stamp", desc: "Satisfying celebration plays the moment a stamp is confirmed" },
+    { icon: "✦", title: "Multi-stamp confirmed", desc: "×3 badge shows exactly how many were added at once" },
     { icon: "✦", title: "Progress ring updates", desc: "Card animates to the new position in real time" },
-    { icon: "✦", title: "Satisfying feedback", desc: "Haptic + visual confirmation on every stamp" },
   ],
   ember: [
     { icon: "✦", title: "Ember burst moment", desc: "Amber sparks rise as your reward unlocks — earned and special" },
@@ -49,6 +53,7 @@ const historyItems = [
   { date: "Jun 12", time: "8:45 AM", merchant: "Maison Café — Marais", stamp: 2 },
 ];
 
+// Circular stamp grid — matches the real app
 function StampGrid({ filled, total = 9, reward = false }: { filled: number; total?: number; reward?: boolean }) {
   return (
     <div className="space-y-1.5">
@@ -59,14 +64,14 @@ function StampGrid({ filled, total = 9, reward = false }: { filled: number; tota
             <motion.div
               key={i}
               initial={false}
-              animate={isFilled ? { backgroundColor: reward ? "#F59E0B" : "#4F46E5", scale: 1 } : { scale: 1 }}
+              animate={isFilled ? { scale: 1 } : { scale: 1 }}
               transition={{ type: "spring", stiffness: 400, damping: 20, delay: isFilled ? i * 0.04 : 0 }}
-              className="aspect-square rounded-md flex items-center justify-center"
+              className="aspect-square rounded-full flex items-center justify-center"
               style={{ background: isFilled ? (reward ? "#F59E0B" : "#4F46E5") : "#27272A" }}
             >
               {isFilled && (
                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 500, damping: 20 }}>
-                  <svg width="10" height="10" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+                  <svg width="9" height="9" viewBox="0 0 120 120" fill="none" aria-hidden="true">
                     <line x1="38" y1="14" x2="38" y2="106" stroke="white" strokeWidth="14" strokeLinecap="round" />
                     <line x1="38" y1="60" x2="90" y2="16" stroke="white" strokeWidth="14" strokeLinecap="round" />
                     <line x1="38" y1="60" x2="90" y2="104" stroke="white" strokeWidth="14" strokeLinecap="round" />
@@ -78,14 +83,13 @@ function StampGrid({ filled, total = 9, reward = false }: { filled: number; tota
           );
         })}
       </div>
-      <div className={`w-full rounded-md py-2 flex items-center justify-center text-[10px] font-semibold transition-all duration-500 ${filled >= total ? "bg-[#F59E0B]/20 text-[#F59E0B]" : "bg-[#18181B] text-[#52525B]"}`}>
+      <div className={`w-full rounded-full py-1.5 flex items-center justify-center text-[9px] font-semibold transition-all duration-500 ${filled >= total ? "bg-[#F59E0B]/20 text-[#F59E0B]" : "bg-[#18181B] text-[#52525B]"}`}>
         {filled >= total ? "Free Coffee Unlocked!" : `${total - filled} more → Free Coffee`}
       </div>
     </div>
   );
 }
 
-// Inline SVG icons to avoid pulling in lucide for tiny sizes
 function MinusIcon() {
   return <svg width="10" height="2" viewBox="0 0 10 2" fill="none"><line x1="0.5" y1="1" x2="9.5" y2="1" stroke="#7B75F0" strokeWidth="1.8" strokeLinecap="round"/></svg>;
 }
@@ -95,27 +99,107 @@ function PlusIcon() {
 
 const STAMP_CIRCUMFERENCE = 2 * Math.PI * 26;
 
+// Lottie confetti — fetches JSON lazily, plays once inside the phone frame
+function PhoneConfetti() {
+  const [data, setData] = useState<object | null>(null);
+  useEffect(() => {
+    fetch("/animations/confetti.json").then(r => r.json()).then(setData).catch(() => {});
+  }, []);
+  if (!data) return null;
+  return (
+    <div className="absolute inset-0 pointer-events-none z-10">
+      <Lottie
+        animationData={data}
+        loop={false}
+        autoplay
+        style={{ width: "100%", height: "100%" }}
+        rendererSettings={{ preserveAspectRatio: "xMidYMid slice" }}
+      />
+    </div>
+  );
+}
+
+// Mini bottom nav — matches the real app's raised-centre-button design
+function PhoneNav() {
+  return (
+    <div className="absolute bottom-0 left-0 right-0 z-20">
+      <div
+        className="flex items-center mx-1.5 mb-1 rounded-2xl relative"
+        style={{ background: "rgba(13,13,18,0.97)", border: "1px solid rgba(255,255,255,0.07)" }}
+      >
+        {[
+          { Icon: Wallet, label: "Wallet" },
+          { Icon: MapPin, label: "Discover" },
+          null, // centre space
+          { Icon: Bell, label: "Activity" },
+          { Icon: User, label: "Profile" },
+        ].map((tab, i) =>
+          tab === null ? (
+            <div key={i} className="flex-1" style={{ height: 30 }} />
+          ) : (
+            <div key={i} className="flex-1 flex flex-col items-center gap-0.5 py-1.5">
+              <tab.Icon size={12} className="text-[#52525B]" />
+              <span className="text-[5px] text-[#52525B]">{tab.label}</span>
+            </div>
+          )
+        )}
+      </div>
+
+      {/* Raised centre button */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center"
+        style={{ bottom: "calc(0.25rem + 8px)" }}
+      >
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center"
+          style={{
+            background: "linear-gradient(145deg, #6366F1, #4F46E5)",
+            boxShadow: "0 3px 10px rgba(79,70,229,0.5), 0 0 0 2px rgba(13,13,18,0.97)",
+          }}
+        >
+          <GlyphMark size={16} color="white" showDot={false} />
+        </div>
+        <span className="text-[5px] font-semibold mt-0.5" style={{ color: "#7B75F0" }}>Stamp</span>
+      </div>
+
+      {/* Home indicator */}
+      <div className="flex justify-center mb-1 mt-0.5">
+        <div className="w-10 h-0.5 bg-[#27272A] rounded-full" />
+      </div>
+    </div>
+  );
+}
+
 function PhoneScreen({ screen }: { screen: string }) {
   switch (screen) {
 
-    // ── Screen 1: Wallet ──────────────────────────────────────
+    // ── Screen 1: Wallet — brand header card + circular stamps ──
     case "wallet":
       return (
-        <div className="flex flex-col h-full">
-          <div className="px-3 pt-2 pb-3 border-b border-[#27272A]">
-            <p className="text-[9px] text-[#71717A]">Good morning!</p>
-            <p className="text-xs font-bold text-white font-[family-name:var(--font-dm-sans)]">Your loyalty cards</p>
+        <div className="flex flex-col h-full pb-[44px]">
+          <div className="px-3 pt-2 pb-2 border-b border-[#27272A] flex items-center gap-2">
+            <GlyphMark size={14} />
+            <p className="text-[10px] font-bold text-white font-[family-name:var(--font-dm-sans)]">My Wallet</p>
           </div>
           <div className="flex-1 p-2.5 overflow-hidden">
-            <div className="bg-[#111113] rounded-xl border border-[#4F46E5]/30 p-2.5" style={{ background: "linear-gradient(135deg, rgba(79,70,229,0.12), #09090B)" }}>
-              <div className="flex items-center justify-between mb-2.5">
+            <div className="rounded-2xl overflow-hidden" style={{ boxShadow: "0 4px 20px rgba(79,70,229,0.2)" }}>
+              {/* Brand color header */}
+              <div
+                className="px-3 pt-3 pb-2.5 flex items-center justify-between"
+                style={{ background: "linear-gradient(135deg, #5550E8 0%, #4040C0 100%)" }}
+              >
                 <div>
-                  <p className="text-[8px] font-bold text-[#6366F1] uppercase tracking-wider">Maison Café</p>
-                  <p className="text-[10px] font-bold text-white font-[family-name:var(--font-dm-sans)]">Coffee Loyalty</p>
+                  <p className="text-[7px] font-semibold uppercase tracking-[0.1em] mb-0.5" style={{ color: "rgba(255,255,255,0.6)" }}>Maison Café</p>
+                  <p className="text-[11px] font-bold text-white font-[family-name:var(--font-dm-sans)]">Coffee Loyalty</p>
                 </div>
-                <GlyphMark size={18} />
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "rgba(255,255,255,0.15)" }}>
+                  <GlyphMark size={16} color="white" showDot={false} />
+                </div>
               </div>
-              <StampGrid filled={5} />
+              {/* Stamp grid body */}
+              <div className="bg-[#111113] px-3 pt-3 pb-2.5">
+                <StampGrid filled={5} />
+              </div>
             </div>
           </div>
         </div>
@@ -124,77 +208,46 @@ function PhoneScreen({ screen }: { screen: string }) {
     // ── Screen 2: Stamp Picker ────────────────────────────────
     case "picker":
       return (
-        <div className="flex flex-col items-center justify-center h-full gap-3 px-3">
+        <div className="flex flex-col items-center justify-center h-full gap-3 px-3 pb-[44px]">
           <GlyphMark size={20} className="mb-0.5" />
-
           <div className="text-center">
             <p className="text-[7px] font-semibold tracking-[0.13em] uppercase text-[#52525B] mb-0.5">Collect stamps</p>
             <p className="text-[11px] font-bold text-white font-[family-name:var(--font-dm-sans)]">How many today?</p>
           </div>
-
-          {/* Counter row */}
           <div className="flex items-center justify-center gap-3">
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ border: "1px solid rgba(99,102,241,0.22)", background: "rgba(79,70,229,0.06)" }}
-            >
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ border: "1px solid rgba(99,102,241,0.22)", background: "rgba(79,70,229,0.06)" }}>
               <MinusIcon />
             </div>
-
-            {/* Counter tile */}
-            <div
-              className="w-[68px] h-[68px] rounded-[18px] flex flex-col items-center justify-center gap-0.5"
-              style={{
-                background: "linear-gradient(145deg, #1e1b4b 0%, #0f0e1e 100%)",
-                border: "1px solid rgba(99,102,241,0.2)",
-                boxShadow: "0 4px 16px rgba(79,70,229,0.22)",
-              }}
-            >
+            <div className="w-[68px] h-[68px] rounded-[18px] flex flex-col items-center justify-center gap-0.5" style={{ background: "linear-gradient(145deg, #1e1b4b 0%, #0f0e1e 100%)", border: "1px solid rgba(99,102,241,0.2)", boxShadow: "0 4px 16px rgba(79,70,229,0.22)" }}>
               <GlyphMark size={13} color="rgba(99,102,241,0.3)" showDot={false} />
-              <span
-                className="text-[26px] font-bold text-white leading-none font-[family-name:var(--font-dm-sans)]"
-                style={{ letterSpacing: "-1px" }}
-              >
-                3
-              </span>
+              <span className="text-[26px] font-bold text-white leading-none font-[family-name:var(--font-dm-sans)]" style={{ letterSpacing: "-1px" }}>3</span>
             </div>
-
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ border: "1px solid rgba(99,102,241,0.22)", background: "rgba(79,70,229,0.06)" }}
-            >
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ border: "1px solid rgba(99,102,241,0.22)", background: "rgba(79,70,229,0.06)" }}>
               <PlusIcon />
             </div>
           </div>
-
-          {/* CTA */}
-          <button
-            className="w-full py-2.5 rounded-xl text-[10px] font-semibold text-white"
-            style={{
-              background: "linear-gradient(135deg, #6366F1, #4F46E5)",
-              boxShadow: "0 3px 12px rgba(79,70,229,0.35)",
-            }}
-          >
+          <button className="w-full py-2.5 rounded-xl text-[10px] font-semibold text-white" style={{ background: "linear-gradient(135deg, #6366F1, #4F46E5)", boxShadow: "0 3px 12px rgba(79,70,229,0.35)" }}>
             Collect 3 stamps →
           </button>
         </div>
       );
 
-    // ── Screen 3: Stamps Added ────────────────────────────────
+    // ── Screen 3: Stamps Added + Lottie Confetti ─────────────
     case "stamped":
       return (
-        <div className="flex flex-col items-center justify-center h-full gap-2.5 relative px-4">
-          {/* Glyph mark springs in from above */}
+        <div className="flex flex-col items-center justify-center h-full gap-2.5 relative px-4 pb-[44px]">
+          {/* Lottie confetti — plays once, clipped to phone frame */}
+          <PhoneConfetti />
+
           <motion.div
             initial={{ y: -40, scale: 0.5, rotate: -15, opacity: 0 }}
             animate={{ y: 0, scale: 1, rotate: 0, opacity: 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 18 }}
-            className="relative"
+            className="relative z-10"
           >
             <div className="w-14 h-14 rounded-2xl bg-[#4F46E5] flex items-center justify-center shadow-lg shadow-indigo-500/40">
               <GlyphMark size={30} color="white" />
             </div>
-            {/* ×3 badge pops in */}
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -206,32 +259,16 @@ function PhoneScreen({ screen }: { screen: string }) {
             </motion.div>
           </motion.div>
 
-          {/* Text fades up */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-center"
-          >
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="text-center z-10">
             <p className="text-sm font-bold text-white font-[family-name:var(--font-dm-sans)]">3 stamps added!</p>
             <p className="text-[9px] text-[#71717A]">3 more to your free coffee</p>
           </motion.div>
 
-          {/* Progress ring animates to 6/9 */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.45 }}
-            className="relative w-16 h-16"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }} className="relative w-16 h-16 z-10">
             <svg viewBox="0 0 64 64" className="w-16 h-16 -rotate-90">
               <circle cx="32" cy="32" r="26" fill="none" stroke="#27272A" strokeWidth="3" />
               <motion.circle
-                cx="32" cy="32" r="26"
-                fill="none"
-                stroke="#4F46E5"
-                strokeWidth="3"
-                strokeLinecap="round"
+                cx="32" cy="32" r="26" fill="none" stroke="#4F46E5" strokeWidth="3" strokeLinecap="round"
                 strokeDasharray={STAMP_CIRCUMFERENCE}
                 initial={{ strokeDashoffset: STAMP_CIRCUMFERENCE }}
                 animate={{ strokeDashoffset: STAMP_CIRCUMFERENCE * (1 - 6 / 9) }}
@@ -249,112 +286,39 @@ function PhoneScreen({ screen }: { screen: string }) {
     // ── Screen 4: Ember Burst Reward ──────────────────────────
     case "ember":
       return (
-        <div
-          className="flex flex-col h-full relative overflow-hidden"
-          style={{ background: "radial-gradient(ellipse 90% 55% at 50% 36%, rgba(245,158,11,0.13) 0%, transparent 72%)" }}
-        >
-          {/* Rising ember particles */}
+        <div className="flex flex-col h-full relative overflow-hidden pb-[44px]" style={{ background: "radial-gradient(ellipse 90% 55% at 50% 36%, rgba(245,158,11,0.13) 0%, transparent 72%)" }}>
           {[
             { left: "14%", size: 2.5, dur: 2.8, delay: 0.2, op: 0.7 },
-            { left: "27%", size: 2,   dur: 3.2, delay: 0.6, op: 0.5 },
-            { left: "41%", size: 3,   dur: 2.4, delay: 0.1, op: 0.6 },
-            { left: "59%", size: 2,   dur: 3.5, delay: 0.8, op: 0.5 },
-            { left: "73%", size: 3,   dur: 2.6, delay: 0.4, op: 0.65 },
+            { left: "27%", size: 2, dur: 3.2, delay: 0.6, op: 0.5 },
+            { left: "41%", size: 3, dur: 2.4, delay: 0.1, op: 0.6 },
+            { left: "59%", size: 2, dur: 3.5, delay: 0.8, op: 0.5 },
+            { left: "73%", size: 3, dur: 2.6, delay: 0.4, op: 0.65 },
             { left: "85%", size: 2.5, dur: 3.0, delay: 0.9, op: 0.45 },
-            { left: "20%", size: 2,   dur: 3.8, delay: 1.3, op: 0.4 },
+            { left: "20%", size: 2, dur: 3.8, delay: 1.3, op: 0.4 },
             { left: "66%", size: 2.5, dur: 2.9, delay: 1.0, op: 0.55 },
           ].map((e, i) => (
-            <motion.div
-              key={i}
-              initial={{ y: "110%", opacity: 0 }}
-              animate={{ y: "-15%", opacity: [0, e.op, 0] }}
-              transition={{ duration: e.dur, delay: e.delay, repeat: Infinity, ease: "easeOut" }}
-              className="absolute rounded-full pointer-events-none"
-              style={{
-                left: e.left,
-                bottom: 0,
-                width: e.size,
-                height: e.size,
-                background: "#F59E0B",
-                boxShadow: `0 0 ${e.size * 2}px rgba(245,158,11,0.5)`,
-              }}
-            />
+            <motion.div key={i} initial={{ y: "110%", opacity: 0 }} animate={{ y: "-15%", opacity: [0, e.op, 0] }} transition={{ duration: e.dur, delay: e.delay, repeat: Infinity, ease: "easeOut" }} className="absolute rounded-full pointer-events-none" style={{ left: e.left, bottom: 0, width: e.size, height: e.size, background: "#F59E0B", boxShadow: `0 0 ${e.size * 2}px rgba(245,158,11,0.5)` }} />
           ))}
 
-          {/* Hero: amber Glyph mark + pulsing rings */}
           <div className="flex-1 flex flex-col items-center justify-center gap-3 px-3 relative z-10">
-            <motion.div
-              initial={{ scale: 0.3, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: "spring", stiffness: 220, damping: 16, delay: 0.1 }}
-              className="relative"
-            >
+            <motion.div initial={{ scale: 0.3, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 220, damping: 16, delay: 0.1 }} className="relative">
               {[0, 1].map(i => (
-                <motion.div
-                  key={i}
-                  initial={{ scale: 1, opacity: 0 }}
-                  animate={{ scale: [1, 1.65, 2.1], opacity: [0.45, 0.2, 0] }}
-                  transition={{ duration: 1.8, delay: 0.3 + i * 0.32, repeat: Infinity, repeatDelay: 0.4 }}
-                  className="absolute inset-0 rounded-[18px] pointer-events-none"
-                  style={{ background: "rgba(245,158,11,0.22)", margin: "-3px" }}
-                />
+                <motion.div key={i} initial={{ scale: 1, opacity: 0 }} animate={{ scale: [1, 1.65, 2.1], opacity: [0.45, 0.2, 0] }} transition={{ duration: 1.8, delay: 0.3 + i * 0.32, repeat: Infinity, repeatDelay: 0.4 }} className="absolute inset-0 rounded-[18px] pointer-events-none" style={{ background: "rgba(245,158,11,0.22)", margin: "-3px" }} />
               ))}
-              <div
-                className="w-14 h-14 rounded-[18px] flex items-center justify-center"
-                style={{
-                  background: "linear-gradient(145deg, #FBBF24 0%, #D97706 100%)",
-                  boxShadow: "0 0 22px rgba(245,158,11,0.48)",
-                }}
-              >
+              <div className="w-14 h-14 rounded-[18px] flex items-center justify-center" style={{ background: "linear-gradient(145deg, #FBBF24 0%, #D97706 100%)", boxShadow: "0 0 22px rgba(245,158,11,0.48)" }}>
                 <GlyphMark size={30} color="white" showDot={false} />
               </div>
             </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.22 }}
-              className="text-center"
-            >
-              <p
-                className="text-[7px] font-semibold tracking-[0.13em] uppercase mb-1"
-                style={{ color: "rgba(245,158,11,0.65)" }}
-              >
-                Card complete
-              </p>
-              <p
-                className="text-sm font-bold text-white font-[family-name:var(--font-dm-sans)]"
-                style={{ letterSpacing: "-0.3px" }}
-              >
-                Reward unlocked.
-              </p>
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }} className="text-center">
+              <p className="text-[7px] font-semibold tracking-[0.13em] uppercase mb-1" style={{ color: "rgba(245,158,11,0.65)" }}>Card complete</p>
+              <p className="text-sm font-bold text-white font-[family-name:var(--font-dm-sans)]" style={{ letterSpacing: "-0.3px" }}>Reward unlocked.</p>
             </motion.div>
           </div>
 
-          {/* Glass bottom sheet */}
-          <motion.div
-            initial={{ y: 56, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 280, damping: 28, delay: 0.18 }}
-            className="mx-2 mb-3 rounded-xl p-2.5 relative z-10"
-            style={{
-              background: "rgba(13,13,18,0.97)",
-              border: "1px solid rgba(245,158,11,0.2)",
-              backdropFilter: "blur(12px)",
-            }}
-          >
-            <div
-              className="flex items-center gap-2 mb-2.5 pb-2"
-              style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-            >
-              <div
-                className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center"
-                style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.2)" }}
-              >
-                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-                  <path d="M1.5 4.5a.75.75 0 01.75-.75h8.5a.75.75 0 01.75.75v1a1 1 0 000 2v1a.75.75 0 01-.75.75h-8.5A.75.75 0 011.5 9.5v-1a1 1 0 000-2v-1z" stroke="#F59E0B" strokeWidth="1.1" />
-                  <line x1="4.5" y1="3.8" x2="4.5" y2="9.8" stroke="#F59E0B" strokeWidth="1" strokeLinecap="round" strokeDasharray="1.5 1.5" />
-                </svg>
+          <motion.div initial={{ y: 56, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: "spring", stiffness: 280, damping: 28, delay: 0.18 }} className="mx-2 mb-1 rounded-xl p-2.5 relative z-10" style={{ background: "rgba(13,13,18,0.97)", border: "1px solid rgba(245,158,11,0.2)", backdropFilter: "blur(12px)" }}>
+            <div className="flex items-center gap-2 mb-2.5 pb-2" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <div className="w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center" style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.2)" }}>
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 4.5a.75.75 0 01.75-.75h8.5a.75.75 0 01.75.75v1a1 1 0 000 2v1a.75.75 0 01-.75.75h-8.5A.75.75 0 011.5 9.5v-1a1 1 0 000-2v-1z" stroke="#F59E0B" strokeWidth="1.1"/><line x1="4.5" y1="3.8" x2="4.5" y2="9.8" stroke="#F59E0B" strokeWidth="1" strokeLinecap="round" strokeDasharray="1.5 1.5"/></svg>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[7px] text-[#52525B]">Your reward</p>
@@ -362,12 +326,7 @@ function PhoneScreen({ screen }: { screen: string }) {
                 <p className="text-[6.5px]" style={{ color: "rgba(245,158,11,0.65)" }}>Show to merchant</p>
               </div>
             </div>
-            <div
-              className="w-full py-1.5 rounded-lg text-center text-[9px] font-semibold text-black"
-              style={{ background: "linear-gradient(135deg, #FBBF24, #D97706)" }}
-            >
-              Go to my rewards
-            </div>
+            <div className="w-full py-1.5 rounded-lg text-center text-[9px] font-semibold text-black" style={{ background: "linear-gradient(135deg, #FBBF24, #D97706)" }}>Go to my rewards</div>
           </motion.div>
         </div>
       );
@@ -375,19 +334,13 @@ function PhoneScreen({ screen }: { screen: string }) {
     // ── Screen 5: History ─────────────────────────────────────
     case "history":
       return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full pb-[44px]">
           <div className="px-3 pt-2 pb-2 border-b border-[#27272A]">
             <p className="text-xs font-bold text-white font-[family-name:var(--font-dm-sans)]">Stamp History</p>
           </div>
           <div className="flex-1 overflow-hidden">
             {historyItems.map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.07 }}
-                className="flex items-center gap-2 px-2.5 py-2 border-b border-[#18181B] last:border-0"
-              >
+              <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.07 }} className="flex items-center gap-2 px-2.5 py-2 border-b border-[#18181B] last:border-0">
                 <div className="w-6 h-6 rounded-lg bg-[#4F46E5]/10 flex items-center justify-center flex-shrink-0">
                   <Stamp size={11} className="text-[#6366F1]" />
                 </div>
@@ -414,11 +367,7 @@ export default function PhoneDemo() {
   const shouldReduceMotion = useReducedMotion();
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const goTo = (index: number) => {
-    setDirection(index > screen ? 1 : -1);
-    setScreen(index);
-  };
-
+  const goTo = (index: number) => { setDirection(index > screen ? 1 : -1); setScreen(index); };
   const next = () => goTo((screen + 1) % SCREENS.length);
   const prev = () => goTo((screen - 1 + SCREENS.length) % SCREENS.length);
 
@@ -434,21 +383,14 @@ export default function PhoneDemo() {
   return (
     <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
       {/* Phone */}
-      <div
-        className="relative flex-shrink-0"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-      >
+      <div className="relative flex-shrink-0" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
         <div className="relative w-[220px] h-[440px] bg-[#09090B] rounded-[36px] border-2 border-[#27272A] shadow-2xl shadow-black/60 overflow-hidden">
           {/* Notch */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#09090B] rounded-b-2xl z-10" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#09090B] rounded-b-2xl z-30" />
           {/* Status bar */}
-          <div className="flex items-center justify-between px-5 pt-2 pb-1 text-[9px] text-[#71717A]">
+          <div className="flex items-center justify-between px-5 pt-2 pb-1 text-[9px] text-[#71717A] relative z-20">
             <span>9:41</span>
-            <div className="flex items-center gap-1">
-              <Wifi size={9} />
-              <Battery size={9} />
-            </div>
+            <div className="flex items-center gap-1"><Wifi size={9} /><Battery size={9} /></div>
           </div>
 
           {/* Screen content */}
@@ -466,21 +408,16 @@ export default function PhoneDemo() {
                 <PhoneScreen screen={SCREENS[screen].id} />
               </motion.div>
             </AnimatePresence>
-          </div>
 
-          {/* Home indicator */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-20 h-1 bg-[#3F3F46] rounded-full" />
+            {/* Bottom nav — always visible above screen content */}
+            <PhoneNav />
+          </div>
         </div>
 
         {/* Progress dots */}
         <div className="flex items-center justify-center gap-2 mt-4">
           {SCREENS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => goTo(i)}
-              className={`transition-all duration-200 rounded-full cursor-pointer ${i === screen ? "w-5 h-1.5 bg-[#4F46E5]" : "w-1.5 h-1.5 bg-[#3F3F46] hover:bg-[#71717A]"}`}
-              aria-label={`Screen ${i + 1}`}
-            />
+            <button key={i} onClick={() => goTo(i)} className={`transition-all duration-200 rounded-full cursor-pointer ${i === screen ? "w-5 h-1.5 bg-[#4F46E5]" : "w-1.5 h-1.5 bg-[#3F3F46] hover:bg-[#71717A]"}`} aria-label={`Screen ${i + 1}`} />
           ))}
         </div>
 
@@ -499,22 +436,9 @@ export default function PhoneDemo() {
       {/* Feature callouts */}
       <div className="flex-1 space-y-4 max-w-xs">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={screen}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-4"
-          >
+          <motion.div key={screen} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.3 }} className="space-y-4">
             {currentCallouts.map((c, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: 12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.08 }}
-                className="flex items-start gap-3"
-              >
+              <motion.div key={i} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.08 }} className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-lg bg-[#4F46E5]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <span className="text-[#6366F1] text-xs">✦</span>
                 </div>

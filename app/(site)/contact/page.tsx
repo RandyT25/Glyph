@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Phone, Clock, CheckCircle, MapPin } from "lucide-react";
+import { Mail, Phone, Clock, CheckCircle, MapPin, FileDown } from "lucide-react";
 import ScrollReveal from "@/components/animations/scroll-reveal";
 import { slideLeft, slideRight } from "@/lib/motion";
 
@@ -23,8 +23,11 @@ const initialFormData: FormData = {
 };
 
 export default function ContactPage() {
+  const CONTACT_API = "https://glyph-app-sigma.vercel.app/api/contact";
+
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
 
   const validate = (): boolean => {
@@ -39,10 +42,25 @@ export default function ContactPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
-      setSubmitted(true);
+    if (!validate()) return;
+    setSubmitting(true);
+    try {
+      const res = await fetch(CONTACT_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        alert("Something went wrong. Please try emailing us directly.");
+      }
+    } catch {
+      alert("Network error. Please try emailing us directly.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -235,9 +253,10 @@ export default function ContactPage() {
 
                     <button
                       type="submit"
-                      className="w-full cursor-pointer bg-[#4F46E5] hover:bg-[#6366F1] text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/25 text-sm"
+                      disabled={submitting}
+                      className="w-full cursor-pointer bg-[#4F46E5] hover:bg-[#6366F1] disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-all duration-200 shadow-lg shadow-indigo-500/25 text-sm"
                     >
-                      Send Message
+                      {submitting ? "Sending…" : "Send Message"}
                     </button>
                   </motion.form>
                 )}
@@ -303,26 +322,26 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Book a demo card */}
+              {/* Product overview PDF card */}
               <div className="rounded-2xl border border-[#4F46E5]/30 bg-[#4F46E5]/05 p-7">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl bg-[#4F46E5] flex items-center justify-center flex-shrink-0">
-                    <Clock size={18} className="text-white" />
+                    <FileDown size={18} className="text-white" />
                   </div>
                   <div>
                     <h3 className="font-[family-name:var(--font-dm-sans)] font-bold text-[#F4F4F5] mb-1">
-                      Book a 15-min demo call
+                      Download product overview
                     </h3>
                     <p className="text-sm text-[#71717A] leading-relaxed mb-4">
-                      Skip the form. Pick a time that works for you and we&apos;ll show you Glyph live — for your specific type of business.
+                      A 6-page PDF covering how Glyph works, the merchant dashboard, and pricing — everything you need to decide if it&apos;s right for your business.
                     </p>
                     <a
-                      href="https://calendly.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href="/glyph-product-overview.pdf"
+                      download="Glyph-Product-Overview.pdf"
                       className="cursor-pointer inline-flex items-center gap-2 bg-[#4F46E5] hover:bg-[#6366F1] text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-all duration-200"
                     >
-                      Schedule on Calendly
+                      <FileDown size={15} />
+                      Download PDF
                     </a>
                   </div>
                 </div>

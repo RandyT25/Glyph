@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glyph — Product Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  @page {
+    size: 210mm 297mm;
+    margin: 0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:        #0A0A14;
+    --surface:   #111126;
+    --surface2:  #161630;
+    --border:    rgba(255,255,255,0.07);
+    --border2:   rgba(255,255,255,0.12);
+    --indigo:    #5A52E8;
+    --indigo-lt: #7B75F0;
+    --indigo-dim:#2D2A7A;
+    --gold:      #F59E0B;
+    --gold-dim:  #3D2E00;
+    --text:      #F1F0FF;
+    --muted:     #9997B8;
+    --dim:       #5C5A78;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── Page shell ── */
+  .page {
+    width: 794px;
+    height: 1123px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  @media print {
+    html, body { margin: 0; padding: 0; width: 210mm; }
+    .page {
+      width: 210mm;
+      height: 297mm;
+      max-height: 297mm;
+      overflow: hidden;
+      page-break-after: always;
+      break-after: page;
+    }
+  }
+
+  /* ── Grid overlay (subtle) ── */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(90,82,232,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(90,82,232,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  /* ── Glow accent ── */
+  .glow {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(90,82,232,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ── Nav bar ── */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 40px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .nav-logo svg {
+    width: 26px;
+    height: 26px;
+  }
+  .nav-logo-text {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .nav-section {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--dim);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+  }
+  .footer-text {
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.2px;
+  }
+  .footer-dot {
+    color: var(--indigo-dim);
+  }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .badge-indigo {
+    background: rgba(90,82,232,0.15);
+    color: var(--indigo-lt);
+    border: 1px solid rgba(90,82,232,0.25);
+  }
+  .badge-gold {
+    background: rgba(245,158,11,0.12);
+    color: var(--gold);
+    border: 1px solid rgba(245,158,11,0.2);
+  }
+  .badge-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* ══════════════════════════════
+     PAGE 1 — COVER
+  ══════════════════════════════ */
+  .cover-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px 80px;
+    position: relative;
+    z-index: 10;
+    gap: 36px;
+  }
+
+  .cover-logo-mark {
+    width: 88px;
+    height: 88px;
+    background: radial-gradient(circle at 40% 40%, rgba(90,82,232,0.3), transparent 70%);
+    border: 1px solid rgba(90,82,232,0.3);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cover-logo-mark svg {
+    width: 48px;
+    height: 48px;
+  }
+
+  .cover-headline {
+    text-align: center;
+  }
+  .cover-title {
+    font-size: 64px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+  .cover-tagline {
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: -0.2px;
+    line-height: 1.4;
+    max-width: 480px;
+  }
+
+  .cover-subtitle {
+    font-size: 14px;
+    color: var(--dim);
+    margin-top: 6px;
+    font-weight: 400;
+  }
+
+  .cover-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--border2);
+  }
+
+  .cover-stats {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .cover-stat {
+    padding: 28px 48px;
+    text-align: center;
+    position: relative;
+  }
+  .cover-stat + .cover-stat {
+    border-left: 1px solid var(--border);
+  }
+  .cover-stat-value {
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--indigo-lt);
+    letter-spacing: -1.5px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .cover-stat-label {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* ══════════════════════════════
+     PAGE 2 — PROBLEM
+  ══════════════════════════════ */
+  .page-content {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--indigo-lt);
+    margin-bottom: 6px;
+  }
+
+  .page-heading {
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    color: #fff;
+  }
+  .page-heading span {
+    color: var(--indigo-lt);
+  }
+
+  .page-subheading {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 560px;
+    margin-top: -12px;
+  }
+
+  /* Problem cards */
+  .problem-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+  }
+
+  .problem-card {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    position: relative;
+    overflow: hidden;
+  }
+  .problem-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--indigo);
+    border-radius: 3px 0 0 3px;
+  }
+  .problem-card.gold::before { background: var(--gold); }
+
+  .problem-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--indigo-dim);
+    border: 1px solid rgba(90,82,232,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--indigo-lt);
+    flex-shrink: 0;
+  }
+  .problem-card.gold .problem-num {
+    background: var(--gold-dim);
+    border-color: rgba(245,158,11,0.3);
+    color: var(--gold);
+  }
+
+  .problem-body { flex: 1; }
+  .problem-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  .problem-text {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .problem-stat {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--indigo-lt);
+    background: rgba(90,82,232,0.1);
+    border: 1px solid rgba(90,82,232,0.2);
+    border-radius: 6px;
+    padding: 4px 10px;
+    display: inline-block;
+    margin-top: 10px;
+    letter-spacing: 0.2px;
+  }
+  .problem-card.gold .problem-stat {
+    color: var(--gold);
+    background: rgba(245,158,11,0.08);
+    border-color: rgba(245,158,11,0.2);
+  }
+
+  /* ══════════════════════════════
+     PAGE 3 — HOW IT WORKS
+  ══════════════════════════════ */
+  .steps-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+  }
+
+  .step-card {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    position: relative;
+  }
+
+  .step-num-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    flex-shrink: 0;
+  }
+  .step-num {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--indigo), #7C3AED);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+  .step-connector {
+    width: 2px;
+    flex: 1;
+    min-height: 20px;
+    background: linear-gradient(to bottom, var(--indigo), transparent);
+    margin-top: 4px;
+  }
+
+  .step-body { flex: 1; padding-top: 4px; }
+  .step-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.4px;
+    margin-bottom: 8px;
+  }
+  .step-text {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .step-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--indigo-lt);
+    background: rgba(90,82,232,0.1);
+    border: 1px solid rgba(90,82,232,0.2);
+    border-radius: 6px;
+    padding: 4px 10px;
+  }
+  .step-tag svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+
+  /* ══════════════════════════════
+     PAGE 4 — DASHBOARD
+  ══════════════════════════════ */
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    flex: 1;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle at top right, rgba(90,82,232,0.08), transparent 70%);
+    pointer-events: none;
+  }
+
+  .feature-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(90,82,232,0.12);
+    border: 1px solid rgba(90,82,232,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--indigo-lt);
+  }
+  .feature-icon svg { width: 18px; height: 18px; }
+
+  .feature-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+  .feature-text {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ══════════════════════════════
+     PAGE 5 — PRICING
+  ══════════════════════════════ */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr 1fr;
+    gap: 14px;
+    flex: 1;
+    align-items: stretch;
+  }
+
+  .pricing-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pricing-card.featured {
+    background: linear-gradient(180deg, rgba(90,82,232,0.15) 0%, var(--surface) 60%);
+    border-color: rgba(90,82,232,0.4);
+  }
+
+  .pricing-most-pop {
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--indigo);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 0 0 8px 8px;
+  }
+
+  .pricing-tier {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .pricing-tier.starter { color: var(--dim); }
+  .pricing-tier.growth { color: var(--indigo-lt); }
+  .pricing-tier.enterprise { color: var(--gold); }
+
+  .pricing-price {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .pricing-amount {
+    font-size: 42px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+  .pricing-period {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .pricing-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-top: 6px;
+  }
+
+  .pricing-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+  }
+
+  .pricing-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+  .pricing-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .pricing-feature-check {
+    width: 16px;
+    height: 16px;
+    border-radius: 5px;
+    background: rgba(90,82,232,0.15);
+    border: 1px solid rgba(90,82,232,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .pricing-feature-check svg { width: 9px; height: 9px; }
+  .pricing-card:not(.featured) .pricing-feature-check {
+    background: rgba(255,255,255,0.05);
+    border-color: var(--border2);
+  }
+
+  .pricing-cta {
+    display: block;
+    text-align: center;
+    padding: 11px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+    border: none;
+    cursor: pointer;
+  }
+  .pricing-cta.primary {
+    background: var(--indigo);
+    color: #fff;
+  }
+  .pricing-cta.secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border2);
+  }
+
+  /* ══════════════════════════════
+     PAGE 6 — CTA
+  ══════════════════════════════ */
+  .cta-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    position: relative;
+    z-index: 10;
+    gap: 48px;
+  }
+
+  .cta-headline {
+    text-align: center;
+  }
+  .cta-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--indigo-lt);
+    margin-bottom: 16px;
+  }
+  .cta-title {
+    font-size: 52px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1.05;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+  .cta-title em {
+    font-style: normal;
+    color: var(--indigo-lt);
+  }
+  .cta-sub {
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .cta-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    max-width: 580px;
+  }
+  .cta-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .cta-card.accent {
+    background: linear-gradient(135deg, rgba(90,82,232,0.2), rgba(124,58,237,0.1));
+    border-color: rgba(90,82,232,0.35);
+  }
+  .cta-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+  .cta-card-text {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .cta-card-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--indigo-lt);
+    margin-top: 4px;
+    text-decoration: none;
+  }
+
+  .cta-tagline {
+    font-size: 13px;
+    color: var(--dim);
+    text-align: center;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    width: 100%;
+    max-width: 580px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     PAGE 1 — COVER
+════════════════════════════════════════ -->
+<div class="page">
+  <div class="grid-bg"></div>
+  <div class="glow" style="width:500px;height:500px;top:100px;left:50%;transform:translateX(-50%);"></div>
+
+  <div class="cover-content">
+
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="88" height="88" style="border-radius:20px;flex-shrink:0;">
+      <defs>
+        <linearGradient id="iconGrad" x1="0" y1="0" x2="500" y2="500" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#4F46E5"/>
+          <stop offset="100%" stop-color="#3730A3"/>
+        </linearGradient>
+        <clipPath id="iconClip"><rect width="500" height="500" rx="112"/></clipPath>
+      </defs>
+      <rect width="500" height="500" rx="112" fill="url(#iconGrad)"/>
+      <ellipse cx="140" cy="120" rx="200" ry="160" fill="rgba(255,255,255,0.06)" clip-path="url(#iconClip)"/>
+      <line x1="148" y1="68" x2="148" y2="432" stroke="white" stroke-width="36" stroke-linecap="round"/>
+      <line x1="148" y1="250" x2="370" y2="70" stroke="white" stroke-width="36" stroke-linecap="round"/>
+      <line x1="148" y1="250" x2="370" y2="430" stroke="white" stroke-width="36" stroke-linecap="round"/>
+      <circle cx="370" cy="70" r="52" fill="#F59E0B"/>
+      <circle cx="370" cy="70" r="30" fill="#FDE68A"/>
+    </svg>
+
+    <div class="cover-headline">
+      <div class="cover-title">Glyph</div>
+      <div class="cover-tagline">NFC Loyalty — Built for Small Business</div>
+      <div class="cover-subtitle">Replace paper stamp cards with beautiful, permanent, tap-to-earn loyalty.</div>
+    </div>
+
+    <div class="cover-divider"></div>
+
+    <div class="cover-stats">
+      <div class="cover-stat">
+        <div class="cover-stat-value">500+</div>
+        <div class="cover-stat-label">Businesses</div>
+      </div>
+      <div class="cover-stat">
+        <div class="cover-stat-value">2.4M</div>
+        <div class="cover-stat-label">Stamps issued</div>
+      </div>
+      <div class="cover-stat">
+        <div class="cover-stat-value">94%</div>
+        <div class="cover-stat-label">Avg. retention</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <span class="footer-text">glyph-app-sigma.vercel.app</span>
+    <span class="footer-text">Product Overview · 2026</span>
+    <span class="footer-text">randythurion@gmail.com</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     PAGE 2 — THE PROBLEM
+════════════════════════════════════════ -->
+<div class="page">
+  <div class="grid-bg"></div>
+
+  <div class="nav">
+    <div class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="26" height="26"><line x1="158" y1="58" x2="158" y2="442" stroke="#7B75F0" stroke-width="44" stroke-linecap="round"/><line x1="158" y1="250" x2="375" y2="66" stroke="#7B75F0" stroke-width="44" stroke-linecap="round"/><line x1="158" y1="250" x2="375" y2="434" stroke="#7B75F0" stroke-width="44" stroke-linecap="round"/><circle cx="375" cy="66" r="58" fill="#F59E0B"/><circle cx="375" cy="66" r="34" fill="#FDE68A"/></svg>
+      <span class="nav-logo-text">Glyph</span>
+    </div>
+    <span class="nav-section">01 / The Problem</span>
+  </div>
+
+  <div class="page-content">
+
+    <div>
+      <div class="section-label">The Problem</div>
+      <div class="page-heading">Paper stamp cards are<br><span>a broken promise.</span></div>
+    </div>
+
+    <p class="page-subheading">
+      Every small business knows the feeling: a customer loses their stamp card, the ink fades, or it just sits forgotten in a drawer. Loyalty built on paper isn't loyalty — it's just friction.
+    </p>
+
+    <div class="problem-grid">
+
+      <div class="problem-card">
+        <div class="problem-num">1</div>
+        <div class="problem-body">
+          <div class="problem-title">Lost &amp; forgotten</div>
+          <div class="problem-text">Paper cards get misplaced, damaged, or abandoned before they're ever completed. Customers leave empty-handed, and businesses lose the repeat visit they were banking on.</div>
+          <div class="problem-stat">85% of paper stamp cards are never completed</div>
+        </div>
+      </div>
+
+      <div class="problem-card">
+        <div class="problem-num">2</div>
+        <div class="problem-body">
+          <div class="problem-title">Zero customer data</div>
+          <div class="problem-text">With paper, the business has no idea who their loyal customers are, how often they visit, or why they stopped coming back. Every departure is a mystery — and a missed opportunity.</div>
+          <div class="problem-stat">No insight into churn or repeat visit patterns</div>
+        </div>
+      </div>
+
+      <div class="problem-card gold">
+        <div class="problem-num">3</div>
+        <div class="problem-body">
+          <div class="problem-title">No delight, no magic</div>
+          <div class="problem-text">A paper card feels transactional, not personal. There's no moment of reward, no real-time progress, no celebration when a customer earns their free coffee. The experience falls flat.</div>
+          <div class="problem-stat">0 memorable moments in the redemption journey</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="footer-text">glyph-app-sigma.vercel.app</span>
+    <span class="footer-text footer-dot">●</span>
+    <span class="footer-text">randythurion@gmail.com</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     PAGE 3 — HOW IT WORKS
+════════════════════════════════════════ -->
+<div class="page">
+  <div class="grid-bg"></div>
+  <div class="glow" style="width:360px;height:360px;top:-80px;right:-80px;background:radial-gradient(circle,rgba(90,82,232,0.12) 0%,transparent 70%);"></div>
+
+  <div class="nav">
+    <div class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="26" height="26"><line x1="158" y1="58" x2="158" y2="442" stroke="#7B75F0" stroke-width="44" stroke-linecap="round"/><line x1="158" y1="250" x2="375" y2="66" stroke="#7B75F0" stroke-width="44" stroke-linecap="round"/><line x1="158" y1="250" x2="375" y2="434" stroke="#7B75F0" stroke-width="44" stroke-linecap="round"/><circle cx="375" cy="66" r="58" fill="#F59E0B"/><circle cx="375" cy="66" r="34" fill="#FDE68A"/></svg>
+      <span class="nav-logo-text">Glyph</span>
+    </div>
+    <span class="nav-section">02 / How It Works</span>
+  </div>
+
+  <div class="page-content">
+
+    <div>
+      <div class="section-label">The Solution</div>
+      <div class="page-heading">Tap. Stamp. Reward.<br><span>Under 2 seconds.</span></div>
+    </div>
+
+    <p class="page-subheading">
+      Glyph uses NFC chips — the same technology as contactless payments — to stamp a digital loyalty card with a single phone tap. No app download needed. No friction.
+    </p>
+
+    <div class="steps-grid">
+
+      <div class="step-card">
+        <div class="step-num-wrap">
+          <div class="step-num">01</div>
+          <div class="step-connector"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Merchant registers an NFC tag</div>
+          <div class="step-text">A small NFC sticker or puck is registered to a campaign in the Glyph dashboard in under 30 seconds. Assign it to a location, set your stamp target, and you're live.</div>
+          <div class="step-tag">
+            <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Setup in under 30 seconds
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num-wrap">
+          <div class="step-num">02</div>
+          <div class="step-connector"></div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Customer taps their phone</div>
+          <div class="step-text">The customer holds their phone near the NFC tag. A web page opens automatically — no app required. They tap 'Stamp' and the loyalty card updates instantly on their screen.</div>
+          <div class="step-tag">
+            <svg viewBox="0 0 16 16" fill="none"><rect x="5" y="1" width="6" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="12" r="1" fill="currentColor"/></svg>
+            No app download required
+          </div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num-wrap">
+          <div class="step-num">03</div>
+        </div>
+        <div class="step-body">
+          <div class="step-title">Reward unlocks automatically</div>
+          <div class="step-text">When the customer reaches their stamp target (e.g. 9 stamps), a unique QR reward code is generated. The merchant scans it at the counter — fast, secure, and fraud-proof.</div>
+          <div class="step-tag">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2z" stroke="currentColor" stroke-width="1.5"/><path d="M9 9h2v2H9zM11 11h2v2h-2zM13 9h-2v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            QR code redemption
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="footer-text">glyph-app-sigma.vercel.app</span>
+    <span class="footer-text footer-dot">●</span>
+    <span class="footer-text">randythurion@gmail.com</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     PAGE 4 — MERCHANT DASHBOARD
+════════════════════════════════════════ -->
+<div class="page">
+  <div class="grid-bg"></div>
+
+  <div class="nav">
+    <div class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="26" height="26"><line x1="158" y1="58" x2="158" y2="442" stroke="#7B75F0" stroke-width="44" stroke-linecap="round"/><line x1="158" y1="250" x2="375" y2="66" stroke="#7B75F0" stroke-width="44" stroke-linecap="round"/><line x1="158" y1="250" x2="375" y2="434" stroke="#7B75F0" stroke-width="44" stroke-linecap="round"/><circle cx="375" cy="66" r="58" fill="#F59E0B"/><circle cx="375" cy="66" r="34" fill="#FDE68A"/></svg>
+      <span class="nav-logo-text">Glyph</span>
+    </div>
+    <span class="nav-section">03 / Merchant Dashboard</span>
+  </div>
+
+  <div class="page-content">
+
+    <div>
+      <div class="section-label">For Merchants</div>
+      <div class="page-heading">Everything you need.<br><span>Nothing you don't.</span></div>
+    </div>
+
+    <p class="page-subheading">
+      The Glyph merchant dashboard puts campaign management, customer analytics, and NFC control all in one place.
+    </p>
+
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="6" height="6" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="2" width="6" height="6" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="10" width="6" height="6" rx="2" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="10" width="6" height="6" rx="2" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <div class="feature-title">Campaigns</div>
+        <div class="feature-text">Create unlimited stamp card programmes with custom targets, rewards, and expiry dates. Pause or archive campaigns at any time without losing data.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 18 18" fill="none"><path d="M9 2C5.13 2 2 5.13 2 9s3.13 7 7 7 7-3.13 7-7-3.13-7-7-7z" stroke="currentColor" stroke-width="1.5"/><path d="M9 6v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="feature-title">NFC Tag Manager</div>
+        <div class="feature-text">Register and manage NFC tags from a central hub. Assign them to campaigns and locations. Monitor tap counts and last activity in real time.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 18 18" fill="none"><path d="M2 14l4-4 3 3 4-5 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <div class="feature-title">Customer Analytics</div>
+        <div class="feature-text">See who your regulars are, when they visit, and how loyal they are. Full tier breakdown: New, Silver, Gold, and VIP — with visit frequency and lifetime value.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M6 9h6M9 6v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="feature-title">Multi-location Support</div>
+        <div class="feature-text">Run loyalty across all your locations from a single dashboard. Each location gets its own NFC tags, analytics, and staff access — managed centrally.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="10" y="3" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="10" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><circle cx="12.5" cy="12.5" r="2.5" fill="currentColor"/></svg>
+        </div>
+        <div class="feature-title">Rewards &amp; QR Redemption</div>
+        <div class="feature-text">When a customer completes a card, a unique QR code is generated. Scan it at the counter to redeem — fast, secure, and impossible to forge.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="7" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 16c0-3.31 2.69-6 6-6s6 2.69 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="feature-title">Settings &amp; Billing</div>
+        <div class="feature-text">Customise your brand colour, business name, and location info. Upgrade or manage your plan directly from the dashboard — no calls required.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="footer-text">glyph-app-sigma.vercel.app</span>
+    <span class="footer-text footer-dot">●</span>
+    <span class="footer-text">randythurion@gmail.com</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     PAGE 5 — PRICING
+════════════════════════════════════════ -->
+<div class="page">
+  <div class="grid-bg"></div>
+
+  <div class="nav">
+    <div class="nav-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="26" height="26"><line x1="158" y1="58" x2="158" y2="442" stroke="#7B75F0" stroke-width="44" stroke-linecap="round"/><line x1="158" y1="250" x2="375" y2="66" stroke="#7B75F0" stroke-width="44" stroke-linecap="round"/><line x1="158" y1="250" x2="375" y2="434" stroke="#7B75F0" stroke-width="44" stroke-linecap="round"/><circle cx="375" cy="66" r="58" fill="#F59E0B"/><circle cx="375" cy="66" r="34" fill="#FDE68A"/></svg>
+      <span class="nav-logo-text">Glyph</span>
+    </div>
+    <span class="nav-section">04 / Pricing</span>
+  </div>
+
+  <div class="page-content">
+
+    <div>
+      <div class="section-label">Pricing</div>
+      <div class="page-heading">Simple, honest pricing.</div>
+    </div>
+
+    <p class="page-subheading">
+      Start free. Scale when you're ready. No lock-in, no hidden fees, no surprise invoices.
+    </p>
+
+    <div class="pricing-grid">
+
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div>
+          <div class="pricing-tier starter">Starter</div>
+          <div class="pricing-price" style="margin-top:10px;">
+            <div class="pricing-amount">Free</div>
+          </div>
+          <div class="pricing-desc">Forever free. Perfect for trying Glyph with your first location.</div>
+        </div>
+        <hr class="pricing-divider">
+        <ul class="pricing-features">
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#9997B8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            1 location
+          </li>
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#9997B8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            1 active campaign
+          </li>
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#9997B8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            Up to 100 customers
+          </li>
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#9997B8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            Basic analytics
+          </li>
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#9997B8" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            NFC stamp card
+          </li>
+        </ul>
+        <div class="pricing-cta secondary">Get started free</div>
+      </div>
+
+      <!-- Growth (featured) -->
+      <div class="pricing-card featured">
+        <div class="pricing-most-pop">Most Popular</div>
+        <div style="margin-top:14px;">
+          <div class="pricing-tier growth">Growth</div>
+          <div class="pricing-price" style="margin-top:10px;">
+            <div class="pricing-amount">$29</div>
+            <div class="pricing-period">/ month</div>
+          </div>
+          <div class="pricing-desc">Everything a growing business needs to run loyalty at scale.</div>
+        </div>
+        <hr class="pricing-divider">
+        <ul class="pricing-features">
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#7B75F0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            Up to 5 locations
+          </li>
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#7B75F0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            Unlimited campaigns
+          </li>
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#7B75F0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            Unlimited customers
+          </li>
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#7B75F0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            Full analytics dashboard
+          </li>
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#7B75F0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            Priority support
+          </li>
+        </ul>
+        <div class="pricing-cta primary">Start 14-day trial</div>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card">
+        <div>
+          <div class="pricing-tier enterprise">Enterprise</div>
+          <div class="pricing-price" style="margin-top:10px;">
+            <div class="pricing-amount" style="font-size:36px;">Custom</div>
+          </div>
+          <div class="pricing-desc">Tailored for chains, franchises, and high-volume businesses.</div>
+        </div>
+        <hr class="pricing-divider">
+        <ul class="pricing-features">
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            Unlimited locations
+          </li>
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            White-label option
+          </li>
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            API access
+          </li>
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            Dedicated account manager
+          </li>
+          <li class="pricing-feature">
+            <span class="pricing-feature-check"><svg viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5l2 2 4-4" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            Custom integrations
+          </li>
+        </ul>
+        <div class="pricing-cta secondary">Contact sales</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="footer-text">glyph-app-sigma.vercel.app</span>
+    <span class="footer-text footer-dot">●</span>
+    <span class="footer-text">randythurion@gmail.com</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     PAGE 6 — CTA / CLOSING
+════════════════════════════════════════ -->
+<div class="page">
+  <div class="grid-bg"></div>
+  <div class="glow" style="width:600px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+  <div class="cta-content">
+
+    <div class="cta-headline">
+      <div class="cta-eyebrow">Get started today</div>
+      <div class="cta-title">Every tap,<br>a mark of <em>loyalty.</em></div>
+      <div class="cta-sub">Join 500+ businesses building loyalty that actually lasts.</div>
+    </div>
+
+    <div class="cta-cards">
+      <div class="cta-card accent">
+        <div class="cta-card-title">Start for free</div>
+        <div class="cta-card-text">Create your account in 2 minutes. No credit card required. No commitment.</div>
+        <div class="cta-card-link">glyph-app-sigma.vercel.app/sign-up</div>
+      </div>
+      <div class="cta-card">
+        <div class="cta-card-title">Get in touch</div>
+        <div class="cta-card-text">Questions about Growth or Enterprise? We reply within one business day.</div>
+        <div class="cta-card-link">randythurion@gmail.com</div>
+      </div>
+    </div>
+
+    <div class="cta-tagline">
+      glyph-app-sigma.vercel.app &nbsp;·&nbsp; randythurion@gmail.com &nbsp;·&nbsp; © 2026 Glyph
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
