@@ -10,11 +10,13 @@ import GlyphMark from "@/components/common/glyph-mark";
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 const SCREENS = [
-  { id: "wallet",  label: "Wallet" },
-  { id: "scan",    label: "NFC Scan" },
-  { id: "stamped", label: "Stamps Added" },
-  { id: "ember",   label: "Reward" },
-  { id: "history", label: "History" },
+  { id: "wallet",   label: "Wallet" },
+  { id: "scan",     label: "NFC Scan" },
+  { id: "stamped",  label: "Stamps Added" },
+  { id: "ember",    label: "Reward" },
+  { id: "history",  label: "History" },
+  { id: "gift",     label: "Gift Animation" },
+  { id: "redeemed", label: "Redeemed" },
 ];
 
 const CALLOUTS: Record<string, { icon: string; title: string; desc: string }[]> = {
@@ -42,6 +44,16 @@ const CALLOUTS: Record<string, { icon: string; title: string; desc: string }[]> 
     { icon: "✦", title: "Full stamp history", desc: "Every visit, every location recorded" },
     { icon: "✦", title: "Filter by merchant", desc: "Drill into individual businesses" },
     { icon: "✦", title: "Lifetime record", desc: "Permanent marks that compound over time" },
+  ],
+  gift: [
+    { icon: "✦", title: "Gift animation on reward", desc: "A delightful gift burst plays the moment a reward is unlocked" },
+    { icon: "✦", title: "Feels special every time", desc: "Customers remember moments that surprise them — this is one of them" },
+    { icon: "✦", title: "Built-in delight", desc: "No setup required — plays automatically on every card completion" },
+  ],
+  redeemed: [
+    { icon: "✦", title: "Confirmation animation", desc: "A satisfying checkmark plays when a reward is marked as redeemed" },
+    { icon: "✦", title: "Clear closure", desc: "Customer and merchant both see the transaction is complete" },
+    { icon: "✦", title: "Instant status update", desc: "Reward moves to redeemed history in real time" },
   ],
 };
 
@@ -115,6 +127,46 @@ function PhoneConfetti() {
         autoplay
         style={{ width: "100%", height: "100%" }}
         rendererSettings={{ preserveAspectRatio: "xMidYMid slice" }}
+      />
+    </div>
+  );
+}
+
+// Lottie gift reward — plays inside phone frame
+function PhoneGiftReward() {
+  const [data, setData] = useState<object | null>(null);
+  useEffect(() => {
+    fetch("/Glyph/animations/gift-reward.json").then(r => r.json()).then(setData).catch(() => {});
+  }, []);
+  if (!data) return null;
+  return (
+    <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center">
+      <Lottie
+        animationData={data}
+        loop={false}
+        autoplay
+        style={{ width: "100%", height: "100%" }}
+        rendererSettings={{ preserveAspectRatio: "xMidYMid meet" }}
+      />
+    </div>
+  );
+}
+
+// Lottie sucesso — plays inside phone frame
+function PhoneSucesso() {
+  const [data, setData] = useState<object | null>(null);
+  useEffect(() => {
+    fetch("/Glyph/animations/sucesso.json").then(r => r.json()).then(setData).catch(() => {});
+  }, []);
+  if (!data) return null;
+  return (
+    <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center">
+      <Lottie
+        animationData={data}
+        loop={false}
+        autoplay
+        style={{ width: "100%", height: "100%" }}
+        rendererSettings={{ preserveAspectRatio: "xMidYMid meet" }}
       />
     </div>
   );
@@ -387,6 +439,32 @@ function PhoneScreen({ screen }: { screen: string }) {
                 <span className="text-[9px] font-bold text-[#6366F1]">#{item.stamp}</span>
               </motion.div>
             ))}
+          </div>
+        </div>
+      );
+
+    // ── Screen 6: Gift Reward animation ──────────────────────
+    case "gift":
+      return (
+        <div className="flex flex-col items-center justify-center h-full pb-[44px] relative overflow-hidden"
+          style={{ background: "radial-gradient(ellipse 90% 60% at 50% 40%, rgba(245,158,11,0.12) 0%, transparent 70%)" }}
+        >
+          <PhoneGiftReward />
+          <div className="relative z-20 text-center px-4 mt-auto mb-6">
+            <p className="text-[7px] font-semibold tracking-[0.13em] uppercase mb-1" style={{ color: "rgba(245,158,11,0.65)" }}>Card complete</p>
+            <p className="text-xs font-bold text-white font-[family-name:var(--font-dm-sans)]">Reward unlocked.</p>
+          </div>
+        </div>
+      );
+
+    // ── Screen 7: Redeemed ────────────────────────────────
+    case "redeemed":
+      return (
+        <div className="flex flex-col items-center justify-center h-full pb-[44px] relative overflow-hidden bg-[#09090B]">
+          <PhoneSucesso />
+          <div className="relative z-20 text-center px-4 mt-auto mb-6">
+            <p className="text-[7px] font-semibold tracking-[0.13em] uppercase mb-1 text-[#4ADE80]">Confirmed</p>
+            <p className="text-xs font-bold text-white font-[family-name:var(--font-dm-sans)]">Reward redeemed ✓</p>
           </div>
         </div>
       );
