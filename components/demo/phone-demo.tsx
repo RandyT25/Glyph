@@ -456,7 +456,7 @@ export default function PhoneDemo() {
   // Preload all Lottie JSON files immediately on mount
   useEffect(() => {
     ["confetti", "gift-reward", "sucesso"].forEach(name => {
-      fetch(`/Glyph/animations/${name}.json`)
+      fetch(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/animations/${name}.json`)
         .then(r => r.json())
         .then(d => setLottieCache(prev => ({ ...prev, [name]: d })))
         .catch(() => {});
