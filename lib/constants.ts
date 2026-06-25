@@ -3,6 +3,7 @@ export const NAV_LINKS = [
   { label: "Features", href: "/features" },
   { label: "Demo", href: "/demo" },
   { label: "Pricing", href: "/pricing" },
+  { label: "Blog", href: "/blog" },
   { label: "About", href: "/about" },
 ];
 
