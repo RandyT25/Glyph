@@ -1,0 +1,16 @@
+{
+  "name": "Glyph",
+  "short_name": "Glyph",
+  "description": "Kartu stempel digital untuk toko kecil",
+  "lang": "id",
+  "start_url": "/Glyph/prototype/",
+  "scope": "/Glyph/prototype/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4F46E5",
+  "icons": [
+    { "src": "/Glyph/brand/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/Glyph/brand/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/Glyph/brand/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
