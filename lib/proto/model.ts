@@ -42,6 +42,7 @@ export type Customer = {
   phone: string; // digits only, e.g. 081234567801
   stamps: number;
   lastVisit: number; // epoch ms
+  nfc?: boolean; // customer holds a physical NFC card
 };
 
 export type ProtoEvent = {
@@ -117,6 +118,7 @@ export function createSeed(now = Date.now()): ProtoState {
     phone,
     stamps,
     lastVisit: now - d * DAY - (i % 4) * 3600_000,
+    nfc: [0, 1, 2, 3, 6].includes(i),
   }));
 
   const events: ProtoEvent[] = [];

@@ -153,3 +153,8 @@ export function saveShop(patch: Partial<Shop>) {
 export function resetDemo() {
   commit(createSeed());
 }
+
+export function setNfc(customerId: string, value: boolean) {
+  const s = getSnapshot();
+  commit({ ...s, customers: s.customers.map((c) => (c.id === customerId ? { ...c, nfc: value } : c)) });
+}

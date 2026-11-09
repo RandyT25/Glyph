@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
-import { ArrowLeft, ImagePlus, Minus, Plus, Trash2 } from "lucide-react";
+import { ImagePlus, Minus, Plus, Trash2 } from "lucide-react";
+import { AppHeader } from "@/components/proto/app-header";
 import { CardView } from "@/components/proto/card-view";
 import { Loading } from "@/components/proto/column";
 import { STAMP_ICONS } from "@/components/proto/stamp-icons";
@@ -73,22 +73,14 @@ function Editor({ shop }: { shop: Shop }) {
   return (
     <main className="mx-auto flex h-dvh w-full max-w-[430px] flex-col bg-white shadow-xl">
       {node}
-      <header className="flex h-14 shrink-0 items-center gap-2 px-2">
-        <Link
-          href="/prototype/dashboard"
-          onClick={(e) => {
-            if (dirty && !window.confirm("Perubahan belum disimpan. Tetap keluar?")) e.preventDefault();
-          }}
-          className="flex size-12 items-center justify-center rounded-xl text-slate-600 active:bg-slate-100"
-          aria-label="Kembali ke dasbor"
-        >
-          <ArrowLeft className="size-6" />
-        </Link>
-        <div className="leading-tight">
-          <p className="text-xs text-slate-500">Desain kartu</p>
-          <p className="font-bold">{shop.name}</p>
-        </div>
-      </header>
+      <AppHeader
+        title="Desain kartu"
+        shop={shop.name}
+        back="/prototype/dashboard"
+        onBack={(e) => {
+          if (dirty && !window.confirm("Perubahan belum disimpan. Tetap keluar?")) e.preventDefault();
+        }}
+      />
 
       {/* live preview (zoomed out so more of the card fits) */}
       <div className="relative h-[42dvh] shrink-0 bg-slate-200">

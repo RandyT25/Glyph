@@ -2,34 +2,28 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowLeft, Palette, Printer, Search } from "lucide-react";
+import { Gift, Nfc, Palette, Printer, Search, Stamp } from "lucide-react";
+import { AppHeader } from "@/components/proto/app-header";
 import { Column, Loading } from "@/components/proto/column";
 import { CardView } from "@/components/proto/card-view";
 import { Poster } from "@/components/proto/poster";
 import { useProto } from "@/lib/proto/store";
-import { displayName, formatPhone, relativeDay, weekStats, type ProtoState, type Shop } from "@/lib/proto/model";
+import { clockTime, displayName, formatPhone, relativeDay, weekStats, type ProtoState, type Shop } from "@/lib/proto/model";
 
 export default function DashboardPage() {
   const state = useProto();
-  const [tab, setTab] = useState<"pelanggan" | "pengaturan">("pelanggan");
+  const [tab, setTab] = useState<"pelanggan" | "riwayat" | "pengaturan">("pelanggan");
   if (!state) return <Loading />;
 
   return (
     <Column className="bg-slate-50!">
-      <header className="flex h-14 items-center gap-2 bg-white px-2">
-        <Link href="/prototype" className="flex size-12 items-center justify-center rounded-xl text-slate-600 active:bg-slate-100" aria-label="Kembali ke menu">
-          <ArrowLeft className="size-6" />
-        </Link>
-        <div className="leading-tight">
-          <p className="text-xs text-slate-500">Dasbor pemilik</p>
-          <p className="font-bold">{state.shop.name}</p>
-        </div>
-      </header>
+      <AppHeader title="Dasbor pemilik" shop={state.shop.name} />
 
-      <div className="sticky top-0 z-10 grid grid-cols-2 gap-1 border-b border-slate-200 bg-white p-2" role="tablist">
+      <div className="sticky top-0 z-10 grid grid-cols-3 gap-1 border-b border-slate-200 bg-white p-2" role="tablist">
         {(
           [
             ["pelanggan", "Pelanggan"],
+            ["riwayat", "Riwayat"],
             ["pengaturan", "Kartu & poster"],
           ] as const
         ).map(([id, label]) => (
@@ -48,6 +42,9 @@ export default function DashboardPage() {
 
       <div hidden={tab !== "pelanggan"}>
         <CustomersTab state={state} />
+      </div>
+      <div hidden={tab !== "riwayat"}>
+        <HistoryTab state={state} />
       </div>
       <div hidden={tab !== "pengaturan"}>
         <SettingsTab shop={state.shop} />
@@ -136,6 +133,40 @@ function CustomersTab({ state }: { state: ProtoState }) {
   );
 }
 
+/* ---------------- history ---------------- */
+
+function HistoryTab({ state }: { state: ProtoState }) {
+  const byId = new Map(state.customers.map((c) => [c.id, c]));
+  const rows = [...state.events].sort((a, b) => b.at - a.at).slice(0, 40);
+  return (
+    <div className="p-4">
+      <p className="mb-1 text-sm font-semibold text-slate-700">Aktivitas terbaru</p>
+      <p className="mb-3 text-xs text-slate-500">Setiap stempel dan reward tercatat, supaya Anda bisa memeriksa kalau ada yang janggal.</p>
+      <ul className="divide-y divide-slate-100 overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200">
+        {rows.map((e) => {
+          const c = byId.get(e.customerId);
+          const redeem = e.type === "redeem";
+          return (
+            <li key={e.id} className="flex items-center gap-3 p-3">
+              <span className={`flex size-10 shrink-0 items-center justify-center rounded-full ${redeem ? "bg-emerald-100 text-emerald-700" : "bg-indigo-50 text-indigo-600"}`}>
+                {redeem ? <Gift className="size-5" /> : <Stamp className="size-5" />}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-semibold">{c ? displayName(c) : "Pelanggan dihapus"}</p>
+                <p className="text-sm text-slate-500">{redeem ? "Reward ditukar" : "+1 stempel"}</p>
+              </div>
+              <div className="text-right text-xs text-slate-400">
+                <p>{relativeDay(e.at)}</p>
+                <p>{clockTime(e.at)}</p>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
 /* ---------------- settings ---------------- */
 
 function SettingsTab({ shop }: { shop: Shop }) {
@@ -164,6 +195,13 @@ function SettingsTab({ shop }: { shop: Shop }) {
         className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 text-lg font-bold text-white active:scale-[0.98]"
       >
         <Palette className="size-5" /> Ubah desain kartu
+      </Link>
+
+      <Link
+        href="/prototype/nfc"
+        className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl border-2 border-slate-900 text-lg font-bold text-slate-900 active:bg-slate-100"
+      >
+        <Nfc className="size-5" /> Kartu NFC
       </Link>
 
       <button

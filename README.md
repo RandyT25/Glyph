@@ -46,3 +46,8 @@ No backend: all data lives in `localStorage` (key `glyph-proto-v1`; "Reset data 
 Code: `app/prototype/*`, `components/proto/*`, `lib/proto/*`.
 
 Brand assets live in `public/brand` (small web copies; originals in `public/brand/source`).
+
+## Bahasa landing page (`/id`)
+
+Owner-facing website in Bahasa Indonesia (NFC card + WhatsApp stamps). Lives in `app/(id)/id/page.tsx`; the English marketing site at `/` is untouched.
+Screenshots are in `public/site` (WebP, captured from the prototype). New prototype screens: `/prototype/nfc` (NFC cards), dashboard "Riwayat" tab, cashier modes (Nomor / Cari nama / Tap NFC).
