@@ -34,3 +34,13 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Clickable prototype (`/prototype`)
+
+A fake-data prototype of the Glyph stamp card for small shops in Indonesia (Bahasa Indonesia UI, mobile-first).
+No backend: all data lives in `localStorage` (key `glyph-proto-v1`; "Reset data demo" on the prototype home restores it).
+
+- `/prototype` menu · `/prototype/kasir` cashier · `/prototype/wa` WhatsApp preview
+- `/prototype/kartu?c=8x2f` customer card (query param, because the site is a static export) · `/prototype/dashboard` owner dashboard
+
+Code: `app/prototype/*`, `components/proto/*`, `lib/proto/*`.
