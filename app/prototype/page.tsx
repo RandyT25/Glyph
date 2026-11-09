@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { BarChart3, CreditCard, MessageCircle, RotateCcw, Store, Gift } from "lucide-react";
-import GlyphMark from "@/components/common/glyph-mark";
+import { BarChart3, CreditCard, MessageCircle, Palette, RotateCcw, Store, Gift } from "lucide-react";
+import { GlyphIcon } from "@/components/proto/brand";
 import { Column } from "@/components/proto/column";
 import { useToast } from "@/components/proto/use-toast";
 import { resetDemo } from "@/lib/proto/store";
@@ -12,6 +12,7 @@ const SCREENS = [
   { href: "/prototype/wa", title: "Pesan WhatsApp", desc: "Pesan yang diterima pelanggan", icon: MessageCircle, tone: "bg-emerald-600 text-white" },
   { href: "/prototype/kartu?c=8x2f", title: "Kartu Pelanggan", desc: "Dewi · 4 dari 10 stempel", icon: CreditCard, tone: "bg-orange-600 text-white" },
   { href: "/prototype/kartu?c=q7rz", title: "Kartu Pelanggan (penuh)", desc: "Rizky · reward siap ditukar", icon: Gift, tone: "bg-orange-600 text-white" },
+  { href: "/prototype/desain", title: "Desain Kartu", desc: "Logo, tema, warna, dan gambar stempel", icon: Palette, tone: "bg-pink-600 text-white" },
   { href: "/prototype/dashboard", title: "Dasbor Pemilik", desc: "Statistik, pelanggan, pengaturan kartu", icon: BarChart3, tone: "bg-slate-800 text-white" },
 ];
 
@@ -22,7 +23,7 @@ export default function PrototypeHome() {
       {node}
       <header className="px-5 pb-4 pt-8">
         <div className="flex items-center gap-2">
-          <GlyphMark size={36} />
+          <GlyphIcon size={40} />
           <span className="font-heading text-2xl font-bold">Glyph</span>
           <span className="ml-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">Prototipe</span>
         </div>

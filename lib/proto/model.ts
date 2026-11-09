@@ -2,7 +2,30 @@
 
 export type HoursRow = { label: string; time: string };
 
-export type Shop = {
+export type TemplateId = "klasik" | "penuh" | "minimal";
+export type StampIconId = "check" | "scissors" | "coffee" | "shirt" | "droplets" | "star" | "heart" | "flame";
+export type StampShape = "circle" | "square";
+
+/** Everything a business can change about how its card looks. Images are small data URLs. */
+export type Look = {
+  template: TemplateId;
+  logo: string | null;
+  cover: string | null;
+  stampIcon: StampIconId;
+  stampImage: string | null;
+  stampShape: StampShape;
+};
+
+export const DEFAULT_LOOK: Look = {
+  template: "klasik",
+  logo: null,
+  cover: null,
+  stampIcon: "scissors",
+  stampImage: null,
+  stampShape: "circle",
+};
+
+export type Shop = Look & {
   name: string;
   slug: string;
   color: string;
@@ -70,6 +93,22 @@ const SEED_CUSTOMERS: Array<[code: string, name: string, phone: string, stamps: 
   ["yg1a", "Yoga Permana", "081234567810", 1, 6],
 ];
 
+/** Starter looks per kind of business: one tap, then tweak. */
+export const PRESETS: Array<{
+  id: string;
+  label: string;
+  patch: Pick<Shop, "color" | "template" | "stampIcon" | "reward" | "stampsNeeded" | "stampShape">;
+}> = [
+  { id: "barber", label: "Barbershop", patch: { color: "#D9480F", template: "klasik", stampIcon: "scissors", reward: "Potong rambut gratis", stampsNeeded: 10, stampShape: "circle" } },
+  { id: "laundry", label: "Laundry", patch: { color: "#0369A1", template: "penuh", stampIcon: "droplets", reward: "Cuci 1 kg gratis", stampsNeeded: 8, stampShape: "circle" } },
+  { id: "kafe", label: "Kafe", patch: { color: "#7C4A2D", template: "minimal", stampIcon: "coffee", reward: "Kopi gratis", stampsNeeded: 10, stampShape: "square" } },
+];
+
+/** Fill in fields that older saved data does not have. */
+export function normalizeState(s: ProtoState): ProtoState {
+  return { ...s, shop: { ...DEFAULT_LOOK, ...s.shop } };
+}
+
 export function createSeed(now = Date.now()): ProtoState {
   const customers: Customer[] = SEED_CUSTOMERS.map(([code, name, phone, stamps, d], i) => ({
     id: `c${i + 1}`,
@@ -93,6 +132,7 @@ export function createSeed(now = Date.now()): ProtoState {
   return {
     v: 1,
     shop: {
+      ...DEFAULT_LOOK,
       name: "Barber Joko",
       slug: "barberjoko",
       color: "#D9480F",

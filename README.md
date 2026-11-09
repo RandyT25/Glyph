@@ -41,6 +41,8 @@ A fake-data prototype of the Glyph stamp card for small shops in Indonesia (Baha
 No backend: all data lives in `localStorage` (key `glyph-proto-v1`; "Reset data demo" on the prototype home restores it).
 
 - `/prototype` menu · `/prototype/kasir` cashier · `/prototype/wa` WhatsApp preview
-- `/prototype/kartu?c=8x2f` customer card (query param, because the site is a static export) · `/prototype/dashboard` owner dashboard
+- `/prototype/desain` card designer (templates, logo, cover photo, stamp icon/own stamp image, colour) · `/prototype/kartu?c=8x2f` customer card (query param, because the site is a static export) · `/prototype/dashboard` owner dashboard
 
 Code: `app/prototype/*`, `components/proto/*`, `lib/proto/*`.
+
+Brand assets live in `public/brand` (small web copies; originals in `public/brand/source`).

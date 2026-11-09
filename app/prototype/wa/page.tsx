@@ -30,7 +30,7 @@ export default function WaPage() {
         <Link href="/prototype/kasir" className="flex size-11 items-center justify-center rounded-xl active:bg-white/10" aria-label="Kembali ke kasir">
           <ArrowLeft className="size-6" />
         </Link>
-        <ShopLogo color={shop.color} size={40} onColor />
+        <ShopLogo color={shop.color} logo={shop.logo} fallbackIcon={shop.stampIcon} size={40} onColor />
         <div className="leading-tight">
           <p className="font-semibold">{shop.name}</p>
           <p className="text-xs text-white/70">Akun bisnis</p>

@@ -92,7 +92,7 @@ export default function CashierPage() {
           <div className="mt-6 w-full rounded-2xl bg-slate-50 p-4 text-left ring-1 ring-slate-200">
             <p className="text-lg font-bold">{displayName(resultCustomer)}</p>
             <p className="mb-3 text-sm text-slate-500">{formatPhone(resultCustomer.phone)}</p>
-            <StampGrid total={needed} filled={resultCustomer.stamps} color={shop.color} size="sm" />
+            <StampGrid total={needed} filled={resultCustomer.stamps} color={shop.color} size="sm" icon={shop.stampIcon} image={shop.stampImage} shape={shop.stampShape} />
             <p className="mt-3 text-sm font-semibold text-slate-700">
               {redeemed
                 ? `Kartu baru dimulai: 0 dari ${needed}`
@@ -173,7 +173,7 @@ export default function CashierPage() {
                 </p>
               </div>
               <div className="my-2">
-                <StampGrid total={needed} filled={existing.stamps} color={shop.color} size="sm" />
+                <StampGrid total={needed} filled={existing.stamps} color={shop.color} size="sm" icon={shop.stampIcon} image={shop.stampImage} shape={shop.stampShape} />
               </div>
               <p className={`text-sm font-semibold ${full ? "text-emerald-700" : "text-slate-600"}`}>
                 {full ? "Kartu penuh! Siap tukar reward" : `${needed - existing.stamps} lagi untuk reward`}

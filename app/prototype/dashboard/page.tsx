@@ -2,27 +2,20 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowLeft, Minus, Plus, Printer, Search } from "lucide-react";
+import { ArrowLeft, Palette, Printer, Search } from "lucide-react";
 import { Column, Loading } from "@/components/proto/column";
 import { CardView } from "@/components/proto/card-view";
 import { Poster } from "@/components/proto/poster";
-import { useToast } from "@/components/proto/use-toast";
-import { saveShop, useProto } from "@/lib/proto/store";
+import { useProto } from "@/lib/proto/store";
 import { displayName, formatPhone, relativeDay, weekStats, type ProtoState, type Shop } from "@/lib/proto/model";
-
-const SWATCHES = ["#D9480F", "#B91C1C", "#0F766E", "#1D4ED8", "#7C3AED", "#BE185D"];
-const MIN_STAMPS = 5;
-const MAX_STAMPS = 20;
 
 export default function DashboardPage() {
   const state = useProto();
   const [tab, setTab] = useState<"pelanggan" | "pengaturan">("pelanggan");
-  const { show, node } = useToast();
   if (!state) return <Loading />;
 
   return (
     <Column className="bg-slate-50!">
-      {node}
       <header className="flex h-14 items-center gap-2 bg-white px-2">
         <Link href="/prototype" className="flex size-12 items-center justify-center rounded-xl text-slate-600 active:bg-slate-100" aria-label="Kembali ke menu">
           <ArrowLeft className="size-6" />
@@ -37,7 +30,7 @@ export default function DashboardPage() {
         {(
           [
             ["pelanggan", "Pelanggan"],
-            ["pengaturan", "Pengaturan kartu"],
+            ["pengaturan", "Kartu & poster"],
           ] as const
         ).map(([id, label]) => (
           <button
@@ -57,7 +50,7 @@ export default function DashboardPage() {
         <CustomersTab state={state} />
       </div>
       <div hidden={tab !== "pengaturan"}>
-        <SettingsTab shop={state.shop} onSaved={() => show("Pengaturan kartu disimpan")} />
+        <SettingsTab shop={state.shop} />
       </div>
     </Column>
   );
@@ -145,105 +138,33 @@ function CustomersTab({ state }: { state: ProtoState }) {
 
 /* ---------------- settings ---------------- */
 
-function SettingsTab({ shop, onSaved }: { shop: Shop; onSaved: () => void }) {
-  const [needed, setNeeded] = useState(shop.stampsNeeded);
-  const [reward, setReward] = useState(shop.reward);
-  const [color, setColor] = useState(shop.color);
+function SettingsTab({ shop }: { shop: Shop }) {
   const [poster, setPoster] = useState(false);
-
-  const dirty = needed !== shop.stampsNeeded || reward.trim() !== shop.reward || color !== shop.color;
-  const cleanReward = reward.trim() || shop.reward;
-  const draft = { ...shop, stampsNeeded: needed, reward: cleanReward, color };
-  const sampleStamps = Math.min(4, needed - 1);
-
   return (
-    <div className="space-y-5 p-4">
-      <section className="space-y-4 rounded-2xl bg-white p-4 ring-1 ring-slate-200">
-        <div>
-          <p className="mb-2 text-sm font-semibold">Stempel yang dibutuhkan</p>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setNeeded((n) => Math.max(MIN_STAMPS, n - 1))}
-              disabled={needed <= MIN_STAMPS}
-              aria-label="Kurangi stempel"
-              className="flex size-12 items-center justify-center rounded-xl bg-slate-100 active:bg-slate-300 disabled:opacity-40"
-            >
-              <Minus className="size-5" />
-            </button>
-            <p className="w-16 text-center font-heading text-3xl font-extrabold tabular-nums">{needed}</p>
-            <button
-              type="button"
-              onClick={() => setNeeded((n) => Math.min(MAX_STAMPS, n + 1))}
-              disabled={needed >= MAX_STAMPS}
-              aria-label="Tambah stempel"
-              className="flex size-12 items-center justify-center rounded-xl bg-slate-100 active:bg-slate-300 disabled:opacity-40"
-            >
-              <Plus className="size-5" />
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <label htmlFor="reward" className="mb-2 block text-sm font-semibold">
-            Tulisan reward
-          </label>
-          <input
-            id="reward"
-            value={reward}
-            onChange={(e) => setReward(e.target.value)}
-            maxLength={40}
-            className="h-12 w-full rounded-xl border border-slate-300 px-3 text-base outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
-          />
-        </div>
-
-        <div>
-          <p className="mb-2 text-sm font-semibold">Warna toko</p>
-          <div className="flex flex-wrap items-center gap-3">
-            {SWATCHES.map((c) => (
-              <button
-                key={c}
-                type="button"
-                onClick={() => setColor(c)}
-                aria-label={`Warna ${c}`}
-                aria-pressed={color === c}
-                className="size-11 rounded-full ring-offset-2"
-                style={{ background: c, boxShadow: color === c ? `0 0 0 3px #fff, 0 0 0 5px ${c}` : undefined }}
-              />
-            ))}
-            <label className="flex h-11 items-center gap-2 rounded-xl border border-slate-300 px-3 text-sm text-slate-600">
-              Lainnya
-              <input
-                type="color"
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                className="size-7 cursor-pointer border-0 bg-transparent p-0"
-                aria-label="Pilih warna sendiri"
-              />
-            </label>
-          </div>
-        </div>
-      </section>
-
+    <div className="space-y-4 p-4">
       <section>
-        <p className="mb-2 text-sm font-semibold text-slate-700">Pratinjau kartu pelanggan</p>
+        <p className="mb-2 text-sm font-semibold text-slate-700">Kartu pelanggan saat ini</p>
         <div className="overflow-hidden rounded-3xl ring-1 ring-slate-200">
-          <CardView shop={draft} customerName="Contoh Pelanggan" stamps={sampleStamps} preview />
+          <CardView shop={shop} customerName="Contoh Pelanggan" stamps={Math.min(4, shop.stampsNeeded - 1)} preview />
         </div>
+        <dl className="mt-3 grid grid-cols-2 gap-2 text-sm">
+          <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
+            <dt className="text-xs text-slate-500">Stempel dibutuhkan</dt>
+            <dd className="font-bold">{shop.stampsNeeded}</dd>
+          </div>
+          <div className="rounded-xl bg-white p-3 ring-1 ring-slate-200">
+            <dt className="text-xs text-slate-500">Reward</dt>
+            <dd className="font-bold">{shop.reward}</dd>
+          </div>
+        </dl>
       </section>
 
-      <button
-        type="button"
-        disabled={!dirty}
-        onClick={() => {
-          saveShop({ stampsNeeded: needed, reward: cleanReward, color });
-          setReward(cleanReward);
-          onSaved();
-        }}
-        className={`h-14 w-full rounded-2xl text-lg font-bold ${dirty ? "bg-indigo-600 text-white active:scale-[0.98]" : "bg-slate-200 text-slate-400"}`}
+      <Link
+        href="/prototype/desain"
+        className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 text-lg font-bold text-white active:scale-[0.98]"
       >
-        {dirty ? "Simpan perubahan" : "Tidak ada perubahan"}
-      </button>
+        <Palette className="size-5" /> Ubah desain kartu
+      </Link>
 
       <button
         type="button"
@@ -253,7 +174,7 @@ function SettingsTab({ shop, onSaved }: { shop: Shop; onSaved: () => void }) {
         <Printer className="size-5" /> Cetak poster QR
       </button>
 
-      {poster && <Poster shop={draft} onClose={() => setPoster(false)} />}
+      {poster && <Poster shop={shop} onClose={() => setPoster(false)} />}
     </div>
   );
 }

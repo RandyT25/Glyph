@@ -3,6 +3,7 @@
 import { Printer, X } from "lucide-react";
 import { FakeQr } from "./fake-qr";
 import { ShopLogo } from "./shop-logo";
+import { PoweredByGlyph } from "./brand";
 import { readableOn, type Shop } from "@/lib/proto/model";
 
 export function Poster({ shop, onClose }: { shop: Shop; onClose: () => void }) {
@@ -20,7 +21,7 @@ export function Poster({ shop, onClose }: { shop: Shop; onClose: () => void }) {
           className="flex aspect-[210/297] w-full flex-col items-center rounded-2xl p-6 text-center shadow-2xl"
           style={{ background: shop.color, color: ink }}
         >
-          <ShopLogo color={shop.color} size={56} onColor />
+          <ShopLogo color={shop.color} logo={shop.logo} fallbackIcon={shop.stampIcon} size={56} onColor />
           <p className="font-heading mt-2 text-lg font-bold">{shop.name}</p>
 
           <h2 className="font-heading mt-4 text-[26px] font-extrabold leading-tight">
@@ -50,7 +51,10 @@ export function Poster({ shop, onClose }: { shop: Shop; onClose: () => void }) {
             ))}
           </ol>
 
-          <p className="mt-auto pt-3 text-[11px] opacity-80">glyph.id/{shop.slug} · Didukung Glyph</p>
+          <div className="mt-auto flex flex-col items-center gap-1 pt-3 text-[11px]">
+            <span className="opacity-80">glyph.id/{shop.slug}</span>
+            <PoweredByGlyph variant={ink === "#ffffff" ? "white" : "dark"} />
+          </div>
         </div>
 
         <div className="no-print mt-4 grid grid-cols-2 gap-3">

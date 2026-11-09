@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react";
 import {
   buildMessage,
   createSeed,
+  normalizeState,
   isFull,
   type Customer,
   type ProtoState,
@@ -19,7 +20,7 @@ function load(): ProtoState {
     const raw = window.localStorage.getItem(KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as ProtoState;
-      if (parsed && parsed.v === 1 && Array.isArray(parsed.customers)) return parsed;
+      if (parsed && parsed.v === 1 && Array.isArray(parsed.customers)) return normalizeState(parsed);
     }
   } catch {
     /* storage blocked or corrupt: fall through to seed */
